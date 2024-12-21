@@ -75,7 +75,13 @@ const Integrations = () => {
       if (!ctx || !canvas) return
 
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      ctx.strokeStyle = '#6C2BD9'
+      
+      // Create gradient for lines
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
+      gradient.addColorStop(0, 'rgba(108, 43, 217, 0.3)')  // accent-400 with opacity
+      gradient.addColorStop(1, 'rgba(99, 102, 241, 0.3)')  // secondary-400 with opacity
+      
+      ctx.strokeStyle = gradient
       ctx.lineWidth = 0.5
 
       for (let i = 0; i < points.length; i++) {
@@ -118,24 +124,53 @@ const Integrations = () => {
   }, [])
 
   return (
-    <section id="integrations" className="py-20 bg-dark-light relative overflow-hidden">
+    <section id="integrations" className="py-24 relative overflow-hidden">
+      {/* Background with gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-primary-900/95 via-primary-900 to-primary-900/95" />
+      
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
         style={{ pointerEvents: 'none' }}
       />
       
-      <div className="container mx-auto px-4 relative">
+      <div className="container relative z-10 mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16 space-y-4"
         >
-          <h2 className="section-title">Seamless Integrations</h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Our platform integrates with the tools and services you already use.
-          </p>
+          <motion.div 
+            className="text-accent-400 uppercase tracking-widest text-sm font-bold mb-6"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Technology Stack
+          </motion.div>
+          
+          <motion.h2
+            className="heading-lg gradient-text-enhanced mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            Seamless Integrations
+          </motion.h2>
+          
+          <motion.p
+            className="text-xl text-white/80 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            Our platform integrates with the leading tools and services in the industry
+          </motion.p>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
@@ -146,36 +181,40 @@ const Integrations = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.05 }}
               className="integration-logo"
             >
-              <div className="bg-dark rounded-lg p-6 h-32 flex items-center justify-center group hover:bg-dark-lighter transition-colors">
-                <img
-                  src={integration.icon}
-                  alt={integration.name}
-                  className="w-16 h-16 object-contain filter grayscale group-hover:grayscale-0 transition-all"
-                />
+              <div className="card group hover:border-accent-400/50 transition-all duration-300">
+                <div className="relative h-32 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent-400/5 to-secondary-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <img
+                    src={integration.icon}
+                    alt={integration.name}
+                    className="w-16 h-16 object-contain filter grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                  />
+                </div>
+                <p className="text-center mt-4 text-white/70 group-hover:text-accent-300 transition-colors duration-300">
+                  {integration.name}
+                </p>
               </div>
-              <p className="text-center mt-4 text-gray-400 group-hover:text-white transition-colors">
-                {integration.name}
-              </p>
             </motion.div>
           ))}
         </div>
 
+        {/* Call to Action */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-12"
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="text-center mt-20"
         >
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
             className="btn-primary"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
           >
-            View All Integrations
+            Explore All Integrations
           </motion.button>
         </motion.div>
       </div>

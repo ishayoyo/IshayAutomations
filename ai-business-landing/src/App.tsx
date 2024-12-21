@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { motion, useScroll, useSpring } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import Hero from './components/Hero'
 import Services from './components/Services'
 import Features from './components/Features'
@@ -8,14 +8,11 @@ import CaseStudies from './components/CaseStudies'
 import Integrations from './components/Integrations'
 import CallToAction from './components/CallToAction'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 
 function App() {
   const { scrollYProgress } = useScroll()
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  })
+  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1])
 
   useEffect(() => {
     // Preload animations and heavy assets
@@ -26,10 +23,10 @@ function App() {
   }, [])
 
   return (
-    <div className="relative">
+    <div className="relative bg-primary-900 min-h-screen">
       {/* Progress bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-primary z-50 origin-left"
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-accent-400 to-secondary-400 z-50 origin-left"
         style={{ scaleX }}
       />
       
@@ -37,7 +34,7 @@ function App() {
       <Navbar />
       
       {/* Main content */}
-      <main>
+      <main className="relative">
         <Hero />
         <Services />
         <Features />
@@ -48,11 +45,7 @@ function App() {
       </main>
       
       {/* Footer */}
-      <footer className="bg-dark-light py-8 mt-20">
-        <div className="container text-center">
-          <p className="text-gray-400">© 2024 AI Business. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
