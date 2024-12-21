@@ -1,0 +1,195 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    @apply bg-primary-900 text-primary-100 font-sans;
+  }
+}
+
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .btn-primary {
+    @apply bg-secondary-500 text-white font-semibold py-4 px-8 rounded-lg
+           transition-all duration-300 transform hover:scale-103 
+           hover:bg-secondary-400
+           focus:outline-none focus:ring-2 focus:ring-secondary-400
+           active:scale-102 disabled:opacity-50 disabled:cursor-not-allowed
+           border border-secondary-400
+           shadow-[0_0_20px_rgba(59,130,246,0.3)];
+  }
+
+  .btn-outline {
+    @apply border-2 border-white text-white bg-transparent font-semibold
+           py-4 px-8 rounded-lg transition-all duration-300 
+           hover:bg-white/10 hover:shadow-lg
+           hover:border-secondary-400 hover:text-secondary-400
+           focus:outline-none focus:ring-2 focus:ring-white/50
+           shadow-[0_0_15px_rgba(255,255,255,0.2)];
+  }
+  
+  .section-title {
+    @apply text-4xl md:text-5xl font-bold mb-6 text-primary-900
+           relative pb-4 after:content-[''] after:absolute after:bottom-0 after:left-1/2
+           after:-translate-x-1/2 after:w-24 after:h-1 after:bg-gradient-to-r
+           after:from-secondary-500 after:to-accent-500;
+  }
+}
+
+/* Card styles */
+.card {
+  @apply bg-white rounded-xl p-8 transition-all duration-300
+         border border-primary-100 hover:border-secondary-200
+         hover:shadow-soft;
+}
+
+.card.group * {
+  @apply transition-colors duration-300;
+}
+
+.nav-link {
+  @apply text-white relative after:absolute after:bottom-0 after:left-0 after:w-0
+         after:h-0.5 after:bg-white after:transition-all hover:after:w-full;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.nav-link:hover {
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.gradient-text {
+  @apply bg-gradient-to-r from-secondary-600 via-secondary-500 to-accent-500
+         bg-[length:300%_300%] bg-clip-text text-transparent animate-gradient;
+}
+
+.gradient-text-enhanced {
+  @apply bg-gradient-to-r from-indigo-600 via-secondary-500 to-accent-500
+         bg-[length:300%_300%] bg-clip-text text-transparent animate-gradient
+         font-extrabold;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+.glass-effect {
+  @apply backdrop-blur-lg bg-white/80 border border-white/20 shadow-soft;
+}
+
+.floating {
+  @apply animate-float;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background-dark;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary-300 rounded-full hover:bg-primary-400 transition-colors;
+}
+
+/* Animations */
+.hover-lift {
+  @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-soft;
+}
+
+/* Gradient overlay */
+.gradient-overlay {
+  @apply relative overflow-hidden;
+}
+
+.gradient-overlay::after {
+  @apply content-[''] absolute inset-0 bg-gradient-to-b
+         from-transparent via-background/50 to-background
+         pointer-events-none opacity-90;
+}
+
+/* Shimmer effect */
+.shimmer {
+  @apply relative overflow-hidden;
+}
+
+.shimmer::before {
+  @apply content-[''] absolute top-0 -left-[100%] w-[200%] h-full
+         bg-gradient-to-r from-transparent via-white/20 to-transparent
+         animate-shimmer;
+}
+
+/* Typography */
+.heading-xl {
+  @apply text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight;
+}
+
+.heading-lg {
+  @apply text-4xl md:text-5xl font-bold tracking-tight;
+}
+
+.heading-md {
+  @apply text-3xl md:text-4xl font-bold;
+}
+
+.body-lg {
+  @apply text-lg leading-relaxed;
+}
+
+.body-base {
+  @apply text-base text-primary-600 leading-relaxed;
+}
+
+/* Grid layouts */
+.feature-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
+}
+
+.auto-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+}
+
+/* Add these new styles */
+.canvas-container {
+  @apply absolute inset-0 bg-gradient-to-b from-primary-900 via-primary-800 to-primary-900;
+}
+
+.canvas-container canvas {
+  @apply mix-blend-screen;
+}
+
+.scroll-indicator {
+  @apply w-6 h-10 rounded-full border-2 border-primary-100/50
+         backdrop-blur-sm bg-primary-900/30;
+}
+
+.drop-shadow-glow {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.glow-effect {
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+.glow-effect::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glow-effect:hover::after {
+  opacity: 1;
+}
