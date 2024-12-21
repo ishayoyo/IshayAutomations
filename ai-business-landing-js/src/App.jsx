@@ -7,6 +7,7 @@ import CaseStudies from './components/CaseStudies'
 import CallToAction from './components/CallToAction'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import ROICalculator from './components/ROICalculator'
 
 function App() {
   useEffect(() => {
@@ -49,6 +50,9 @@ function App() {
         </div>
         <div id="features">
           <Features />
+        </div>
+        <div id="calculator" className="py-16">
+          <ROICalculator />
         </div>
         <div id="integrations">
           <Integrations />

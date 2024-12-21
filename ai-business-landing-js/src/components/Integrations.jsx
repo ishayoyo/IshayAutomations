@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 const integrations = [
   {
     name: 'React',
-    icon: '/images/react.svg',
+    icon: '/images/react-svgrepo-com.svg',
     category: 'Development',
   },
   {
@@ -19,12 +19,12 @@ const integrations = [
   },
   {
     name: 'AWS',
-    icon: '/images/aws.svg',
+    icon: '/images/aws-svgrepo-com.svg',
     category: 'Cloud',
   },
   {
     name: 'GCP',
-    icon: '/images/gcp.svg',
+    icon: '/images/google-cloud-svgrepo-com.svg',
     category: 'Cloud',
   },
   {
