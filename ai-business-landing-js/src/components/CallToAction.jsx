@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { supabase } from '../lib/supabase'
 
 const AutomationStep = ({ icon, label, isActive, isComplete, delay }) => (
   <motion.div
@@ -113,12 +114,60 @@ const CallToAction = () => {
     setCurrentStep(0)
     setCompletedSteps([])
 
-    // Simulate API calls and automation process
-    await new Promise((resolve) => setTimeout(resolve, 6000))
+    try {
+      // Insert the lead into Supabase
+      const { data, error } = await supabase
+        .from('leads')
+        .insert([
+          {
+            name: formState.name,
+            email: formState.email,
+            company: formState.company,
+            message: formState.message,
+            created_at: new Date().toISOString(),
+          }
+        ])
 
-    setIsSubmitting(false)
-    setIsSuccess(true)
-    setCompletedSteps(automationSteps.map((_, index) => index))
+      if (error) throw error
+
+      // Send Telegram notification
+      const telegramMessage = `
+🌟 <b>New Lead Alert!</b> 🌟
+
+👤 <b>Name:</b> ${formState.name}
+📧 <b>Email:</b> ${formState.email}
+🏢 <b>Company:</b> ${formState.company || 'Not provided'}
+
+💬 <b>Message:</b>
+<i>${formState.message}</i>
+
+📅 <code>${new Date().toLocaleString()}</code>
+------------------
+Powered by IshayAutomations`
+      
+      await fetch(`https://api.telegram.org/bot${import.meta.env.VITE_TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: import.meta.env.VITE_TELEGRAM_CHAT_ID,
+          text: telegramMessage,
+          parse_mode: 'HTML'
+        })
+      })
+
+      // Simulate remaining automation process
+      await new Promise((resolve) => setTimeout(resolve, 4000))
+
+      setIsSuccess(true)
+      setCompletedSteps(automationSteps.map((_, index) => index))
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      alert('There was an error submitting your form. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
 
     // Reset form after success
     setTimeout(() => {
