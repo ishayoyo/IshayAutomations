@@ -28,7 +28,7 @@ const useWindowSize = () => {
 const AnimatedSphere = () => {
   const sphereRef = useRef()
   const { width } = useWindowSize()
-  const sphereSize = width < 768 ? 2.5 : 4 // Smaller sphere on mobile
+  const sphereSize = width < 768 ? 1.8 : 4 // Smaller sphere on mobile
   const segments = width < 768 ? 32 : 64 // Reduced segments on mobile
 
   useFrame(({ clock }) => {
@@ -55,8 +55,8 @@ const AnimatedSphere = () => {
 const ParticleField = () => {
   const { width } = useWindowSize()
   // Significantly reduce particle count on mobile
-  const count = width < 768 ? 1000 : 4000
-  const sphereSize = width < 768 ? 2.5 : 4
+  const count = width < 768 ? 800 : 4000
+  const sphereSize = width < 768 ? 1.8 : 4
   const positions = new Float32Array(count * 3)
   const velocities = new Float32Array(count * 3)
   const colors = new Float32Array(count * 3)
