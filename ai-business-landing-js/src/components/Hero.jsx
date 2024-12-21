@@ -29,16 +29,18 @@ const AnimatedSphere = () => {
   const sphereRef = useRef()
   const { width } = useWindowSize()
   const sphereSize = width < 768 ? 2.5 : 4 // Smaller sphere on mobile
+  const segments = width < 768 ? 32 : 64 // Reduced segments on mobile
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime()
     if (sphereRef.current) {
-      sphereRef.current.rotation.y = time * 0.1
+      // Slower rotation on mobile
+      sphereRef.current.rotation.y = time * (width < 768 ? 0.05 : 0.1)
     }
   })
 
   return (
-    <Sphere ref={sphereRef} args={[sphereSize, 64, 64]}>
+    <Sphere ref={sphereRef} args={[sphereSize, segments, segments]}>
       <meshPhongMaterial
         color="#60a5fa"
         wireframe
@@ -51,34 +53,38 @@ const AnimatedSphere = () => {
 }
 
 const ParticleField = () => {
-  const count = 4000
   const { width } = useWindowSize()
+  // Significantly reduce particle count on mobile
+  const count = width < 768 ? 1000 : 4000
   const sphereSize = width < 768 ? 2.5 : 4
   const positions = new Float32Array(count * 3)
   const velocities = new Float32Array(count * 3)
   const colors = new Float32Array(count * 3)
 
+  // Frame rate control for mobile
+  const frameSkip = useRef(0)
+  const maxFrameSkip = width < 768 ? 2 : 0 // Skip frames on mobile
+
   for (let i = 0; i < count; i++) {
     const i3 = i * 3
-    const radius = sphereSize + Math.random() * 0.8 // Keep particles near sphere surface
+    const radius = sphereSize + Math.random() * (width < 768 ? 0.4 : 0.8) // Smaller spread on mobile
     const theta = Math.random() * Math.PI * 2
     const phi = Math.random() * Math.PI
 
-    // Spherical distribution
     positions[i3] = radius * Math.sin(phi) * Math.cos(theta)
     positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta)
     positions[i3 + 2] = radius * Math.cos(phi)
 
-    // Random velocities for fluid movement
-    velocities[i3] = (Math.random() - 0.5) * 0.015
-    velocities[i3 + 1] = (Math.random() - 0.5) * 0.015
-    velocities[i3 + 2] = (Math.random() - 0.5) * 0.015
+    // Slower particle movement on mobile
+    const velocityFactor = width < 768 ? 0.008 : 0.015
+    velocities[i3] = (Math.random() - 0.5) * velocityFactor
+    velocities[i3 + 1] = (Math.random() - 0.5) * velocityFactor
+    velocities[i3 + 2] = (Math.random() - 0.5) * velocityFactor
 
-    // Gradient colors from blue to purple
     const mixFactor = Math.random()
-    colors[i3] = 0.4 + mixFactor * 0.2     // R: subtle variation
-    colors[i3 + 1] = 0.5 + mixFactor * 0.3  // G: more variation
-    colors[i3 + 2] = 0.8 + mixFactor * 0.2  // B: strong blue base
+    colors[i3] = 0.4 + mixFactor * 0.2
+    colors[i3 + 1] = 0.5 + mixFactor * 0.3
+    colors[i3 + 2] = 0.8 + mixFactor * 0.2
   }
 
   const geometry = useRef()
@@ -86,25 +92,30 @@ const ParticleField = () => {
   const points = useRef()
 
   useFrame(() => {
+    // Frame skipping for mobile
+    if (frameSkip.current < maxFrameSkip) {
+      frameSkip.current++
+      return
+    }
+    frameSkip.current = 0
+
     if (geometry.current) {
       const positions = geometry.current.attributes.position.array
       
       for (let i = 0; i < count; i++) {
         const i3 = i * 3
         
-        // Update positions with velocities
         positions[i3] += velocities[i3]
         positions[i3 + 1] += velocities[i3 + 1]
         positions[i3 + 2] += velocities[i3 + 2]
 
-        // Keep particles within sphere bounds
         const x = positions[i3]
         const y = positions[i3 + 1]
         const z = positions[i3 + 2]
         const distance = Math.sqrt(x * x + y * y + z * z)
         
-        const maxRadius = sphereSize + 0.8
-        const minRadius = sphereSize - 0.8
+        const maxRadius = sphereSize + (width < 768 ? 0.4 : 0.8)
+        const minRadius = sphereSize - (width < 768 ? 0.4 : 0.8)
         
         if (distance > maxRadius || distance < minRadius) {
           const scale = (distance > maxRadius ? maxRadius : minRadius) / distance
@@ -152,10 +163,10 @@ const ParticleField = () => {
       <pointsMaterial
         ref={material}
         vertexColors
-        size={0.04}
+        size={width < 768 ? 0.03 : 0.04}
         sizeAttenuation={true}
         transparent={true}
-        opacity={0.6}
+        opacity={width < 768 ? 0.4 : 0.6}
         blending={THREE.AdditiveBlending}
       />
     </points>
@@ -169,14 +180,13 @@ const Hero = () => {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary-900/95 via-primary-900 to-primary-900/95" />
       
-      {/* 3D Canvas - Now positioned absolutely and centered */}
       <div className="absolute inset-0 w-full h-full">
         <Canvas
           camera={{ position: [0, 0, width < 768 ? 8 : 12], fov: 50 }}
           style={{ width: '100%', height: '100%' }}
+          dpr={width < 768 ? 1 : window.devicePixelRatio} // Lower resolution on mobile
         >
           <ambientLight intensity={0.5} />
           <pointLight position={[10, 10, 10]} />
@@ -189,12 +199,11 @@ const Hero = () => {
             enablePan={false} 
             enableRotate={true}
             autoRotate={true}
-            autoRotateSpeed={0.3}
+            autoRotateSpeed={width < 768 ? 0.2 : 0.3}
           />
         </Canvas>
       </div>
 
-      {/* Content */}
       <div className="container relative z-10 mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
@@ -251,7 +260,6 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Scroll indicator */}
       <motion.div
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
         animate={{
