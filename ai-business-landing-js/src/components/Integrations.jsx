@@ -8,8 +8,8 @@ const integrations = [
     category: 'Development',
   },
   {
-    name: 'Express',
-    icon: '/images/express.svg',
+    name: 'Node.js',
+    icon: '/images/nodejs.svg',
     category: 'Development',
   },
   {
@@ -153,6 +153,7 @@ const Integrations = () => {
     let points = {}
     let time = 0
     let activeConnections = new Set()
+    let animationStarted = false
 
     const initPoints = () => {
       const logos = document.querySelectorAll('.integration-logo')
@@ -166,7 +167,15 @@ const Integrations = () => {
       })
     }
 
-    // Generate new random connections periodically
+    // Delay the start of animations
+    const startAnimationsWithDelay = () => {
+      setTimeout(() => {
+        animationStarted = true
+        generateConnections()
+        animate()
+      }, 800) // Delay to allow icons to fade in
+    }
+
     const generateConnections = () => {
       const services = Object.keys(points)
       const newConnections = new Set()
@@ -315,21 +324,24 @@ const Integrations = () => {
       initPoints()
     }
 
-    // Initialize connections
+    // Initialize canvas size but delay animations
     handleResize()
-    generateConnections()
+    startAnimationsWithDelay()
 
     // Regenerate connections less frequently
     const connectionInterval = setInterval(() => {
-      generateConnections()
-    }, 12000) // Changed from 8000 to 12000ms
+      if (animationStarted) {
+        generateConnections()
+      }
+    }, 12000)
 
     window.addEventListener('resize', handleResize)
-    animate()
 
     return () => {
       window.removeEventListener('resize', handleResize)
-      cancelAnimationFrame(animationFrameId)
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
       clearInterval(connectionInterval)
     }
   }, [])
