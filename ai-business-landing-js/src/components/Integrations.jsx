@@ -153,7 +153,6 @@ const Integrations = () => {
     let points = {}
     let time = 0
     let activeConnections = new Set()
-    let animationStarted = false
 
     const initPoints = () => {
       const logos = document.querySelectorAll('.integration-logo')
@@ -167,13 +166,11 @@ const Integrations = () => {
       })
     }
 
-    // Delay the start of animations
-    const startAnimationsWithDelay = () => {
-      setTimeout(() => {
-        animationStarted = true
-        generateConnections()
-        animate()
-      }, 800) // Delay to allow icons to fade in
+    // Start animations immediately
+    const startAnimations = () => {
+      initPoints()
+      generateConnections()
+      animate()
     }
 
     const generateConnections = () => {
@@ -181,12 +178,10 @@ const Integrations = () => {
       const newConnections = new Set()
       const oldConnections = activeConnections
       
-      // Each service will connect to 3-4 others (increased from 2-3)
       services.forEach(service => {
         const connectionCount = 3 + Math.floor(Math.random())
         const availableServices = services.filter(s => s !== service && !newConnections.has(`${s}-${service}`))
         
-        // Try to keep some existing connections for smoothness
         const existingConnections = Array.from(oldConnections)
           .filter(conn => conn.includes(service))
           .slice(0, 2)
@@ -195,7 +190,6 @@ const Integrations = () => {
           newConnections.add(conn)
         })
         
-        // Add new connections
         const remainingCount = connectionCount - existingConnections.length
         for (let i = 0; i < remainingCount && availableServices.length > 0; i++) {
           const targetIndex = Math.floor(Math.random() * availableServices.length)
@@ -324,16 +318,12 @@ const Integrations = () => {
       initPoints()
     }
 
-    // Initialize canvas size but delay animations
+    // Initialize canvas size and start animations immediately
     handleResize()
-    startAnimationsWithDelay()
+    // Shorter delay for initial animation
+    setTimeout(startAnimations, 100)
 
-    // Regenerate connections less frequently
-    const connectionInterval = setInterval(() => {
-      if (animationStarted) {
-        generateConnections()
-      }
-    }, 12000)
+    const connectionInterval = setInterval(generateConnections, 12000)
 
     window.addEventListener('resize', handleResize)
 
@@ -357,47 +347,43 @@ const Integrations = () => {
       />
       
       <div className="container relative z-10 mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 md:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
           >
             <h2 className="heading-lg mb-4">
               <span className="gradient-text-enhanced">System Integrations</span>
             </h2>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+            <p className="text-base md:text-xl text-white/80 max-w-3xl mx-auto">
               Seamlessly connecting and automating your technology ecosystem
             </p>
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-6 max-w-6xl mx-auto">
-          {integrations.map((integration, index) => (
-            <motion.div
+        <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 md:gap-6 max-w-6xl mx-auto">
+          {integrations.map((integration) => (
+            <div
               key={integration.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.05 }}
               className="integration-logo relative"
               data-name={integration.name}
             >
               <div className="card-sm group">
-                <div className="relative h-16 flex items-center justify-center">
+                <div className="relative h-12 md:h-16 flex items-center justify-center">
                   <div className="absolute inset-0 bg-gradient-to-br from-accent-400/5 to-secondary-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <img
                     src={integration.icon}
                     alt={integration.name}
-                    className="w-10 h-10 object-contain"
+                    className="w-8 h-8 md:w-10 md:h-10 object-contain"
                   />
                 </div>
-                <p className="text-center text-sm mt-2 text-white/70">
+                <p className="text-center text-[10px] md:text-sm mt-1 md:mt-2 text-white/70 truncate px-1">
                   {integration.name}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
