@@ -87,6 +87,21 @@ const CaseStudies = () => {
     setTimeout(() => setIsAnimating(false), 500)
   }, [currentIndex, isAnimating])
 
+  const swipeConfidenceThreshold = 10000
+  const swipePower = (offset, velocity) => {
+    return Math.abs(offset) * velocity
+  }
+
+  const handleDragEnd = (e, { offset, velocity }) => {
+    const swipe = swipePower(offset.x, velocity.x)
+
+    if (swipe < -swipeConfidenceThreshold) {
+      paginate(1)
+    } else if (swipe > swipeConfidenceThreshold) {
+      paginate(-1)
+    }
+  }
+
   const slideVariants = {
     enter: (direction) => ({
       x: direction > 0 ? '100%' : '-100%',
@@ -125,7 +140,7 @@ const CaseStudies = () => {
   }
 
   return (
-    <section id="case-studies" className="py-12 md:py-24 relative overflow-hidden">
+    <section id="case-studies" className="py-8 md:py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-primary-900/95 via-primary-900 to-primary-900/95" />
       
       <div className="container relative z-10 mx-auto px-4">
@@ -134,10 +149,10 @@ const CaseStudies = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-8 md:mb-16 space-y-4"
+          className="text-center mb-6 md:mb-16 space-y-3 md:space-y-4"
         >
           <motion.div 
-            className="text-accent-400 uppercase tracking-widest text-sm font-bold mb-4 md:mb-6"
+            className="text-accent-400 uppercase tracking-widest text-xs md:text-sm font-bold mb-2 md:mb-6"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -147,7 +162,7 @@ const CaseStudies = () => {
           </motion.div>
           
           <motion.h2
-            className="heading-lg gradient-text-enhanced mb-4 md:mb-6 text-3xl md:text-4xl lg:text-5xl"
+            className="heading-lg gradient-text-enhanced mb-2 md:mb-6 text-2xl md:text-4xl lg:text-5xl"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -157,7 +172,7 @@ const CaseStudies = () => {
           </motion.h2>
           
           <motion.p
-            className="text-base md:text-xl text-white/80 max-w-3xl mx-auto"
+            className="text-sm md:text-xl text-white/80 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -182,13 +197,17 @@ const CaseStudies = () => {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                className="w-full"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={1}
+                onDragEnd={handleDragEnd}
+                className="w-full touch-pan-y"
               >
                 <div className="card group hover:border-accent-400/50 transition-all duration-300">
-                  <div className="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8">
+                  <div className="flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-8">
                     {/* Mobile-first image placement */}
                     <motion.div 
-                      className="relative rounded-lg overflow-hidden h-[250px] md:h-[500px] order-1 md:order-2 flex items-center justify-center"
+                      className="relative rounded-lg overflow-hidden h-[180px] md:h-[500px] order-1 md:order-2 flex items-center justify-center"
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.5 }}
@@ -208,34 +227,34 @@ const CaseStudies = () => {
                       />
                     </motion.div>
 
-                    <div className="space-y-6 md:space-y-8 order-2 md:order-1">
+                    <div className="space-y-4 md:space-y-8 order-2 md:order-1">
                       <motion.div 
                         initial={{ opacity: 0, y: 20 }} 
                         animate={{ opacity: 1, y: 0 }}
-                        className="space-y-3 md:space-y-4"
+                        className="space-y-2 md:space-y-4"
                       >
-                        <h3 className="text-2xl md:text-3xl font-bold text-white group-hover:text-accent-300 transition-colors duration-300">
+                        <h3 className="text-xl md:text-3xl font-bold text-white group-hover:text-accent-300 transition-colors duration-300">
                           {caseStudies[currentIndex].title}
                         </h3>
-                        <p className="text-lg md:text-xl text-accent-400">
+                        <p className="text-base md:text-xl text-accent-400">
                           {caseStudies[currentIndex].company}
                         </p>
-                        <p className="text-sm md:text-base text-white/70 group-hover:text-white/90 transition-colors duration-300">
+                        <p className="text-xs md:text-base text-white/70 group-hover:text-white/90 transition-colors duration-300">
                           {caseStudies[currentIndex].description}
                         </p>
                       </motion.div>
 
-                      <div className="grid grid-cols-3 gap-3 md:gap-6">
+                      <div className="grid grid-cols-3 gap-2 md:gap-6">
                         {caseStudies[currentIndex].stats.map((stat, index) => (
                           <motion.div
                             key={stat.label}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="card group/stat relative overflow-hidden p-2 md:p-4"
+                            className="card group/stat relative overflow-hidden p-1.5 md:p-4"
                           >
                             <motion.div
-                              className="absolute bottom-0 left-0 h-1 bg-accent-400"
+                              className="absolute bottom-0 left-0 h-0.5 md:h-1 bg-accent-400"
                               variants={automationVariants}
                               initial="initial"
                               animate="animate"
@@ -247,10 +266,10 @@ const CaseStudies = () => {
                               animate={{ opacity: 1 }}
                               transition={{ duration: 0.5, delay: index * 0.1 }}
                             >
-                              <div className="text-lg md:text-2xl font-bold text-white group-hover/stat:text-accent-300 transition-colors duration-300">
+                              <div className="text-base md:text-2xl font-bold text-white group-hover/stat:text-accent-300 transition-colors duration-300">
                                 {stat.value}
                               </div>
-                              <div className="text-xs md:text-sm text-white/70 group-hover/stat:text-white/90 transition-colors duration-300">
+                              <div className="text-[10px] md:text-sm text-white/70 group-hover/stat:text-white/90 transition-colors duration-300">
                                 {stat.label}
                               </div>
                             </motion.div>
@@ -258,19 +277,19 @@ const CaseStudies = () => {
                         ))}
                       </div>
 
-                      <div className="mt-6 md:mt-8 space-y-3 md:space-y-4">
-                        <h4 className="text-lg md:text-xl font-semibold text-accent-400">Key Features:</h4>
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4">
+                      <div className="mt-4 md:mt-8 space-y-2 md:space-y-4">
+                        <h4 className="text-base md:text-xl font-semibold text-accent-400">Key Features:</h4>
+                        <ul className="grid grid-cols-2 gap-1.5 md:gap-4">
                           {caseStudies[currentIndex].features.map((feature, index) => (
                             <motion.li
                               key={feature}
                               initial={{ opacity: 0, x: -20 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: index * 0.1 }}
-                              className="flex items-center space-x-2 text-sm md:text-base text-white/70"
+                              className="flex items-center space-x-1.5 md:space-x-2 text-xs md:text-base text-white/70"
                             >
                               <svg 
-                                className="w-4 h-4 md:w-5 md:h-5 text-accent-400 flex-shrink-0" 
+                                className="w-3 h-3 md:w-5 md:h-5 text-accent-400 flex-shrink-0" 
                                 fill="none" 
                                 viewBox="0 0 24 24" 
                                 stroke="currentColor"
@@ -295,9 +314,9 @@ const CaseStudies = () => {
           </div>
 
           {/* Mobile-optimized Navigation Controls */}
-          <div className="mt-6 md:mt-8 flex items-center justify-center space-x-4 md:space-x-8">
+          <div className="mt-4 md:mt-8 flex items-center justify-center space-x-4 md:space-x-8">
             <motion.button
-              className={`group p-2 md:p-3 rounded-full bg-primary-800/20 backdrop-blur-sm 
+              className={`group p-1.5 md:p-3 rounded-full bg-primary-800/20 backdrop-blur-sm 
                 border-2 border-accent-400/20 hover:border-accent-400/50
                 text-accent-400/50 hover:text-accent-400 
                 transition-all duration-300 ease-out
@@ -311,7 +330,7 @@ const CaseStudies = () => {
                 className="flex items-center"
                 whileHover={{ x: -2 }}
               >
-                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3 h-3 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path 
                     strokeLinecap="round" 
                     strokeLinejoin="round" 
@@ -329,10 +348,10 @@ const CaseStudies = () => {
                   key={index}
                   onClick={() => handleDotClick(index)}
                   disabled={isAnimating}
-                  className={`h-1 md:h-1.5 rounded-full transition-all duration-300 
+                  className={`h-0.5 md:h-1.5 rounded-full transition-all duration-300 
                     ${index === currentIndex 
-                      ? 'w-4 md:w-6 bg-accent-400' 
-                      : 'w-1 md:w-1.5 bg-accent-400/30 hover:bg-accent-400/50'
+                      ? 'w-3 md:w-6 bg-accent-400' 
+                      : 'w-0.5 md:w-1.5 bg-accent-400/30 hover:bg-accent-400/50'
                     } ${isAnimating ? 'cursor-not-allowed' : ''}`}
                   whileHover={!isAnimating ? { scale: 1.1 } : {}}
                   whileTap={!isAnimating ? { scale: 0.95 } : {}}
@@ -341,7 +360,7 @@ const CaseStudies = () => {
             </div>
 
             <motion.button
-              className={`group p-2 md:p-3 rounded-full bg-primary-800/20 backdrop-blur-sm 
+              className={`group p-1.5 md:p-3 rounded-full bg-primary-800/20 backdrop-blur-sm 
                 border-2 border-accent-400/20 hover:border-accent-400/50
                 text-accent-400/50 hover:text-accent-400 
                 transition-all duration-300 ease-out
@@ -355,7 +374,7 @@ const CaseStudies = () => {
                 className="flex items-center"
                 whileHover={{ x: 2 }}
               >
-                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3 h-3 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path 
                     strokeLinecap="round" 
                     strokeLinejoin="round" 
