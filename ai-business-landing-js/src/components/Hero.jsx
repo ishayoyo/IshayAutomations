@@ -210,17 +210,17 @@ const Hero = () => {
                 transition={{ duration: 0.5 }}
                 className="text-4xl md:text-6xl font-bold mb-6"
               >
-                <span className="bg-gradient-to-r from-accent-300 via-accent-400 to-accent-300 bg-clip-text text-transparent">
+                <span className="gradient-text-enhanced">
                   AstronAI
                 </span>
-                <span className="text-white/90"> by Ishay Almuly</span>
+                <span className="text-white/90"> by Almuly Ishay</span>
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-lg md:text-xl text-white/80 max-w-2xl mb-8"
+                className="text-lg md:text-xl text-white/90 max-w-2xl mb-8"
               >
                 Revolutionizing business automation through advanced AI integration. 
                 Seamlessly connect your tools and workflows for enhanced productivity 
