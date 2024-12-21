@@ -1,64 +1,127 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const caseStudies = [
   {
-    title: 'E-commerce Revolution',
-    company: 'Global Retail Corp',
+    title: 'LavetachHub Email Intelligence',
+    company: 'Client Management System',
     description:
-      'Implemented AI-powered recommendation engine resulting in 45% increase in sales.',
+      'Developed an intelligent email management system that automatically processes, categorizes, and stores client communications. The system integrates with Gmail and OneDrive, featuring OpenAI-powered call transcription and smart client matching.',
     stats: [
-      { label: 'Sales Increase', value: '45%' },
-      { label: 'User Engagement', value: '3x' },
-      { label: 'ROI', value: '280%' },
+      { label: 'Email Processing Time', value: '-85%' },
+      { label: 'File Organization', value: '100%' },
+      { label: 'Client Match Rate', value: '99.8%' },
     ],
-    image: '/images/case1.jpg',
+    features: [
+      'Automated client email matching',
+      'Smart attachment organization',
+      'AI-powered call transcription',
+      'Unknown email client matching',
+      'Centralized client management'
+    ],
+    image: '/images/lavetech.jpg',
   },
   {
-    title: 'Smart Manufacturing',
-    company: 'Industrial Tech Ltd',
+    title: 'SaverSonic Social Platform',
+    company: 'AI-Powered Deal Network',
     description:
-      'Automated quality control system reduced defects by 78% and improved efficiency.',
+      'Built a comprehensive social network platform that leverages AI to enhance deal discovery and user engagement. The system analyzes user behavior to provide personalized deal recommendations and improve community interaction.',
     stats: [
-      { label: 'Defect Reduction', value: '78%' },
-      { label: 'Efficiency Gain', value: '60%' },
-      { label: 'Cost Savings', value: '$2.5M' },
+      { label: 'User Engagement', value: '+240%' },
+      { label: 'Deal Discovery', value: '+180%' },
+      { label: 'User Retention', value: '95%' },
     ],
-    image: '/images/case2.jpg',
+    features: [
+      'AI deal recommendation engine',
+      'User behavior analysis',
+      'Social networking features',
+      'Personalized content delivery',
+      'Community engagement tools'
+    ],
+    image: '/images/saversonic.jpg',
   },
   {
-    title: 'Financial Innovation',
-    company: 'NextGen Banking',
+    title: 'SpicyVape E-commerce',
+    company: 'WooCommerce Enhancement',
     description:
-      'AI-driven fraud detection system prevented $10M in potential losses.',
+      'Implemented advanced order processing and fraud detection systems for a WooCommerce platform, significantly reducing manual processing time and fraudulent transactions while improving order accuracy.',
     stats: [
-      { label: 'Fraud Prevention', value: '$10M' },
-      { label: 'Detection Rate', value: '99.9%' },
-      { label: 'False Positives', value: '<0.1%' },
+      { label: 'Fraud Reduction', value: '-92%' },
+      { label: 'Processing Time', value: '-75%' },
+      { label: 'Order Accuracy', value: '99.9%' },
     ],
-    image: '/images/case3.jpg',
+    features: [
+      'Automated order processing',
+      'AI fraud detection',
+      'Order streamlining',
+      'Real-time verification',
+      'Performance optimization'
+    ],
+    image: '/images/spicyvape.jpg',
   },
 ]
 
 const CaseStudies = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isAnimating, setIsAnimating] = useState(false)
   const [direction, setDirection] = useState(0)
+
+  const paginate = useCallback((newDirection) => {
+    if (isAnimating) return
+    
+    setIsAnimating(true)
+    setDirection(newDirection)
+    const newIndex = (currentIndex + newDirection + caseStudies.length) % caseStudies.length
+    setCurrentIndex(newIndex)
+    
+    setTimeout(() => setIsAnimating(false), 500)
+  }, [currentIndex, isAnimating])
+
+  const handleDotClick = useCallback((index) => {
+    if (isAnimating || index === currentIndex) return
+    
+    setIsAnimating(true)
+    setDirection(index > currentIndex ? 1 : -1)
+    setCurrentIndex(index)
+    
+    setTimeout(() => setIsAnimating(false), 500)
+  }, [currentIndex, isAnimating])
 
   const slideVariants = {
     enter: (direction) => ({
-      x: direction > 0 ? 1000 : -1000,
+      x: direction > 0 ? '100%' : '-100%',
       opacity: 0,
+      scale: 0.95,
     }),
     center: {
-      zIndex: 1,
       x: 0,
       opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.4,
+        ease: [0.4, 0.0, 0.2, 1],
+      }
     },
     exit: (direction) => ({
-      zIndex: 0,
-      x: direction < 0 ? 1000 : -1000,
+      x: direction < 0 ? '100%' : '-100%',
       opacity: 0,
+      scale: 0.95,
+      transition: {
+        duration: 0.4,
+        ease: [0.4, 0.0, 0.2, 1],
+      }
     }),
+  }
+
+  const automationVariants = {
+    initial: { width: 0 },
+    animate: { 
+      width: '100%',
+      transition: {
+        duration: 2,
+        ease: "easeInOut",
+      }
+    }
   }
 
   const swipeConfidenceThreshold = 10000
@@ -66,14 +129,8 @@ const CaseStudies = () => {
     return Math.abs(offset) * velocity
   }
 
-  const paginate = (newDirection) => {
-    setDirection(newDirection)
-    setCurrentIndex((prevIndex) => (prevIndex + newDirection + caseStudies.length) % caseStudies.length)
-  }
-
   return (
     <section id="case-studies" className="py-24 relative overflow-hidden">
-      {/* Background with gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary-900/95 via-primary-900 to-primary-900/95" />
       
       <div className="container relative z-10 mx-auto px-4">
@@ -115,127 +172,211 @@ const CaseStudies = () => {
           </motion.p>
         </motion.div>
 
-        <div className="relative max-w-5xl mx-auto">
-          <AnimatePresence initial={false} custom={direction}>
-            <motion.div
-              key={currentIndex}
+        <div className="relative max-w-7xl mx-auto">
+          <div className="relative">
+            <AnimatePresence
+              initial={false}
+              mode="wait"
               custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.2 },
-              }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={1}
-              onDragEnd={(e, { offset, velocity }) => {
-                const swipe = swipePower(offset.x, velocity.x)
-
-                if (swipe < -swipeConfidenceThreshold) {
-                  paginate(1)
-                } else if (swipe > swipeConfidenceThreshold) {
-                  paginate(-1)
-                }
-              }}
-              className="w-full"
+              onExitComplete={() => setIsAnimating(false)}
             >
-              <div className="card group hover:border-accent-400/50 transition-all duration-300">
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-8">
-                    <motion.div 
-                      initial={{ opacity: 0, y: 20 }} 
-                      animate={{ opacity: 1, y: 0 }}
-                      className="space-y-4"
-                    >
-                      <h3 className="text-3xl font-bold text-white group-hover:text-accent-300 transition-colors duration-300">
-                        {caseStudies[currentIndex].title}
-                      </h3>
-                      <p className="text-xl text-accent-400">
-                        {caseStudies[currentIndex].company}
-                      </p>
-                      <p className="text-white/70 group-hover:text-white/90 transition-colors duration-300">
-                        {caseStudies[currentIndex].description}
-                      </p>
-                    </motion.div>
+              <motion.div
+                key={currentIndex}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                className="w-full"
+              >
+                <div className="card group hover:border-accent-400/50 transition-all duration-300">
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="space-y-8">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }} 
+                        animate={{ opacity: 1, y: 0 }}
+                        className="space-y-4"
+                      >
+                        <h3 className="text-3xl font-bold text-white group-hover:text-accent-300 transition-colors duration-300">
+                          {caseStudies[currentIndex].title}
+                        </h3>
+                        <p className="text-xl text-accent-400">
+                          {caseStudies[currentIndex].company}
+                        </p>
+                        <p className="text-white/70 group-hover:text-white/90 transition-colors duration-300">
+                          {caseStudies[currentIndex].description}
+                        </p>
+                      </motion.div>
 
-                    <div className="grid grid-cols-3 gap-6">
-                      {caseStudies[currentIndex].stats.map((stat, index) => (
-                        <motion.div
-                          key={stat.label}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          className="card group/stat hover:border-accent-400/50 transition-all duration-300"
-                        >
-                          <div className="text-2xl font-bold text-white group-hover/stat:text-accent-300 transition-colors duration-300">
-                            {stat.value}
-                          </div>
-                          <div className="text-sm text-white/70 group-hover/stat:text-white/90 transition-colors duration-300">
-                            {stat.label}
-                          </div>
-                        </motion.div>
-                      ))}
+                      <div className="grid grid-cols-3 gap-6">
+                        {caseStudies[currentIndex].stats.map((stat, index) => (
+                          <motion.div
+                            key={stat.label}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.2 }}
+                            className="card group/stat relative overflow-hidden"
+                          >
+                            <motion.div
+                              className="absolute bottom-0 left-0 h-1 bg-accent-400"
+                              variants={automationVariants}
+                              initial="initial"
+                              animate="animate"
+                              key={`progress-${currentIndex}-${index}`}
+                            />
+                            
+                            <motion.div
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.5, delay: index * 0.2 }}
+                            >
+                              <div className="text-2xl font-bold text-white group-hover/stat:text-accent-300 transition-colors duration-300">
+                                {stat.value}
+                              </div>
+                              <div className="text-sm text-white/70 group-hover/stat:text-white/90 transition-colors duration-300">
+                                {stat.label}
+                              </div>
+                            </motion.div>
+                          </motion.div>
+                        ))}
+                      </div>
+
+                      <div className="mt-8 space-y-4">
+                        <h4 className="text-xl font-semibold text-accent-400">Key Features:</h4>
+                        <ul className="grid grid-cols-2 gap-4">
+                          {caseStudies[currentIndex].features.map((feature, index) => (
+                            <motion.li
+                              key={feature}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              className="flex items-center space-x-2 text-white/70"
+                            >
+                              <svg 
+                                className="w-5 h-5 text-accent-400" 
+                                fill="none" 
+                                viewBox="0 0 24 24" 
+                                stroke="currentColor"
+                              >
+                                <path 
+                                  strokeLinecap="round" 
+                                  strokeLinejoin="round" 
+                                  strokeWidth={2} 
+                                  d="M5 13l4 4L19 7" 
+                                />
+                              </svg>
+                              <span>{feature}</span>
+                            </motion.li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="relative rounded-lg overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-accent-400/20 to-secondary-400/20 mix-blend-overlay" />
-                    <img
-                      src={caseStudies[currentIndex].image}
-                      alt={caseStudies[currentIndex].title}
-                      className="w-full h-full object-cover"
-                    />
+                    <motion.div 
+                      className="relative rounded-lg overflow-hidden h-[500px] flex items-center justify-center"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-accent-400/20 to-secondary-400/20 mix-blend-overlay" />
+                      <motion.img
+                        src={caseStudies[currentIndex].image}
+                        alt={caseStudies[currentIndex].title}
+                        className="w-[90%] h-[90%] object-contain filter drop-shadow-[0_0_15px_rgba(129,140,248,0.3)]"
+                        style={{
+                          filter: 'drop-shadow(0 0 15px rgba(129, 140, 248, 0.3))',
+                          WebkitFilter: 'drop-shadow(0 0 15px rgba(129, 140, 248, 0.3))'
+                        }}
+                        initial={{ scale: 1 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                      />
+                    </motion.div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-          {/* Navigation buttons */}
-          <motion.button
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 p-3 rounded-full bg-primary-800/50 backdrop-blur-sm border-2 border-accent-400 text-accent-400 hover:text-accent-300 transition-colors duration-300 group"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => paginate(-1)}
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-            </svg>
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-accent-400/10 to-secondary-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </motion.button>
+          {/* Repositioned Navigation Controls */}
+          <div className="mt-8 flex items-center justify-center space-x-8">
+            <motion.button
+              className={`group p-3 rounded-full bg-primary-800/20 backdrop-blur-sm 
+                border-2 border-accent-400/20 hover:border-accent-400/50
+                text-accent-400/50 hover:text-accent-400 
+                transition-all duration-300 ease-out
+                ${isAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-glow'}`}
+              whileHover={!isAnimating ? { 
+                scale: 1.05,
+                backgroundColor: 'rgba(var(--color-primary-800), 0.3)',
+              } : {}}
+              whileTap={!isAnimating ? { scale: 0.95 } : {}}
+              onClick={() => !isAnimating && paginate(-1)}
+              disabled={isAnimating}
+            >
+              <motion.div
+                className="flex items-center"
+                whileHover={{ x: -2 }}
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M15 19l-7-7 7-7" 
+                  />
+                </svg>
+              </motion.div>
+            </motion.button>
 
-          <motion.button
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 p-3 rounded-full bg-primary-800/50 backdrop-blur-sm border-2 border-accent-400 text-accent-400 hover:text-accent-300 transition-colors duration-300 group"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => paginate(1)}
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
-            </svg>
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-accent-400/10 to-secondary-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </motion.button>
+            {/* Progress Indicators */}
+            <div className="flex space-x-2">
+              {caseStudies.map((_, index) => (
+                <motion.button
+                  key={index}
+                  onClick={() => handleDotClick(index)}
+                  disabled={isAnimating}
+                  className={`h-1.5 rounded-full transition-all duration-300 
+                    ${index === currentIndex 
+                      ? 'w-6 bg-accent-400' 
+                      : 'w-1.5 bg-accent-400/30 hover:bg-accent-400/50'
+                    } ${isAnimating ? 'cursor-not-allowed' : ''}`}
+                  whileHover={!isAnimating ? { scale: 1.1 } : {}}
+                  whileTap={!isAnimating ? { scale: 0.95 } : {}}
+                />
+              ))}
+            </div>
+
+            <motion.button
+              className={`group p-3 rounded-full bg-primary-800/20 backdrop-blur-sm 
+                border-2 border-accent-400/20 hover:border-accent-400/50
+                text-accent-400/50 hover:text-accent-400 
+                transition-all duration-300 ease-out
+                ${isAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-glow'}`}
+              whileHover={!isAnimating ? { 
+                scale: 1.05,
+                backgroundColor: 'rgba(var(--color-primary-800), 0.3)',
+              } : {}}
+              whileTap={!isAnimating ? { scale: 0.95 } : {}}
+              onClick={() => !isAnimating && paginate(1)}
+              disabled={isAnimating}
+            >
+              <motion.div
+                className="flex items-center"
+                whileHover={{ x: 2 }}
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M9 5l7 7-7 7" 
+                  />
+                </svg>
+              </motion.div>
+            </motion.button>
+          </div>
         </div>
-
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="text-center mt-12"
-        >
-          <motion.button
-            className="btn-primary"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            View More Success Stories
-          </motion.button>
-        </motion.div>
       </div>
     </section>
   )

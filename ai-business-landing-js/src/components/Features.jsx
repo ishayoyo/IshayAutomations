@@ -2,85 +2,85 @@ import { motion } from 'framer-motion'
 
 const features = [
   {
-    title: 'Natural Language Processing',
-    description: 'Advanced text analysis and understanding for smarter communication.',
+    title: 'AI System Architecture',
+    description: 'I design and implement custom AI architectures that seamlessly integrate with your existing systems, ensuring scalability and optimal performance for your business needs.',
     icon: (
       <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={1.5}
-          d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
         />
       </svg>
     ),
   },
   {
-    title: 'Computer Vision',
-    description: 'Advanced image recognition and processing for visual intelligence.',
+    title: 'API Integration',
+    description: 'I handle complex API integrations with leading AI services like OpenAI, Google AI, and custom solutions, making advanced AI capabilities accessible to your business.',
     icon: (
       <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={1.5}
-          d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+          d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
         />
       </svg>
     ),
   },
   {
-    title: 'Predictive Analytics',
-    description: 'Data-driven forecasting for informed strategic decisions.',
+    title: 'Process Automation',
+    description: 'I build custom automation solutions that streamline your workflows, reducing manual tasks and increasing operational efficiency through intelligent AI integration.',
     icon: (
       <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={1.5}
-          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
         />
       </svg>
     ),
   },
   {
-    title: 'Deep Learning',
-    description: 'Advanced neural networks that evolve and adapt over time.',
+    title: 'Custom AI Solutions',
+    description: 'I develop tailored AI solutions specific to your business needs, from intelligent data processing to advanced decision-making systems that drive growth.',
     icon: (
       <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={1.5}
-          d="M13 10V3L4 14h7v7l9-11h-7z"
+          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
         />
       </svg>
     ),
   },
   {
-    title: 'Automated Testing',
-    description: 'Continuous validation ensuring optimal performance.',
+    title: 'System Integration',
+    description: 'I ensure seamless integration between your existing infrastructure and new AI capabilities, maintaining data consistency and system reliability throughout.',
     icon: (
       <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={1.5}
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"
         />
       </svg>
     ),
   },
   {
-    title: 'Cloud Integration',
-    description: 'Seamless deployment with scalable cloud solutions.',
+    title: 'Ongoing Support',
+    description: 'I provide continuous technical support and system optimization, ensuring your AI solutions evolve with your business needs and maintain peak performance.',
     icon: (
       <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={1.5}
-          d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+          d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
         />
       </svg>
     ),
@@ -107,7 +107,7 @@ const Features = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Our Capabilities
+            My Services
           </motion.div>
           
           <motion.h2
@@ -117,7 +117,7 @@ const Features = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            Advanced AI Solutions
+            AI Integration Solutions
           </motion.h2>
           
           <motion.p
@@ -127,7 +127,8 @@ const Features = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            Discover how our cutting-edge AI capabilities can transform your business operations
+            I help businesses streamline their operations through custom AI integration and implementation, 
+            turning complex technologies into practical business solutions.
           </motion.p>
         </motion.div>
 
@@ -141,7 +142,7 @@ const Features = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="relative group"
             >
-              <div className="card overflow-hidden group-hover:border-accent-400/50 transition-all duration-300">
+              <div className="card overflow-hidden group-hover:border-accent-400/50 transition-all duration-300 min-h-[280px]">
                 <div className="relative z-10 flex flex-col items-center text-center">
                   <div className="mb-6 text-accent-400 group-hover:text-accent-300 transition-colors duration-300">
                     {feature.icon}

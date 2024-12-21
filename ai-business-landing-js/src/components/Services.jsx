@@ -2,8 +2,8 @@ import { motion } from 'framer-motion'
 
 const services = [
   {
-    title: 'AI Strategy Consulting',
-    description: 'Develop a comprehensive AI roadmap tailored to your business goals and industry challenges.',
+    title: 'AI Integration Services',
+    description: 'I specialize in seamlessly integrating AI capabilities into your existing systems, from API implementations to complex system architectures.',
     icon: (
       <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
@@ -16,8 +16,8 @@ const services = [
     ),
   },
   {
-    title: 'Machine Learning Solutions',
-    description: 'Custom ML models and algorithms designed to solve your specific business problems.',
+    title: 'Custom AI Development',
+    description: 'I build tailored AI solutions that address your specific business challenges, from data processing to advanced automation systems.',
     icon: (
       <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
@@ -30,8 +30,8 @@ const services = [
     ),
   },
   {
-    title: 'Process Automation',
-    description: 'Streamline operations with intelligent automation powered by cutting-edge AI technology.',
+    title: 'Technical Implementation',
+    description: 'I handle the complete technical implementation, from system architecture to API integration, ensuring reliable and scalable solutions.',
     icon: (
       <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
@@ -66,7 +66,7 @@ const Services = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            What We Offer
+            How I Can Help
           </motion.div>
           
           <motion.h2
@@ -76,7 +76,7 @@ const Services = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            Enterprise AI Services
+            AI Implementation Services
           </motion.h2>
           
           <motion.p
@@ -86,7 +86,8 @@ const Services = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            Transform your business with our comprehensive AI solutions and expert consulting
+            I provide end-to-end AI implementation services, from system design to integration,
+            helping your business leverage advanced AI capabilities effectively
           </motion.p>
         </motion.div>
 
@@ -100,7 +101,7 @@ const Services = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="relative group"
             >
-              <div className="card overflow-hidden group-hover:border-accent-400/50 transition-all duration-300">
+              <div className="card overflow-hidden group-hover:border-accent-400/50 transition-all duration-300 min-h-[280px]">
                 <div className="relative z-10 flex flex-col items-center text-center">
                   <div className="mb-6 text-accent-400 group-hover:text-accent-300 transition-colors duration-300">
                     {service.icon}
@@ -119,7 +120,6 @@ const Services = () => {
           ))}
         </div>
 
-        {/* Call to Action */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -132,7 +132,7 @@ const Services = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >
-            Schedule a Consultation
+            Let's Discuss Your Project
           </motion.button>
         </motion.div>
       </div>

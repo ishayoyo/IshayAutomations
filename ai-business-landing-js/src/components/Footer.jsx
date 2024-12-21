@@ -3,164 +3,107 @@ import { motion } from 'framer-motion'
 const Footer = () => {
   return (
     <footer className="py-12 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-primary-900/95 via-primary-900 to-primary-900/95" />
+      <div className="absolute inset-0 bg-gradient-to-b from-primary-900/95 to-primary-800" />
       
       <div className="container relative z-10 mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          {/* Company Info */}
-          <div className="space-y-4">
-            <motion.h3
-              className="text-2xl font-bold text-white"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              AI Business
-            </motion.h3>
-            <motion.p
-              className="text-white/70"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-            >
-              Transforming businesses with cutting-edge AI solutions.
-            </motion.p>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          {/* Logo and Description */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="space-y-6"
+          >
+            <img src="/images/astro-logo.svg" alt="Astro AI Logo" className="h-12 w-auto" />
+            <p className="text-lg text-white/70 leading-relaxed">
+              Transforming businesses through innovative AI solutions. We bridge the gap between cutting-edge technology and enterprise success.
+            </p>
+          </motion.div>
 
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <motion.h4
-              className="text-lg font-semibold text-white"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              Quick Links
-            </motion.h4>
-            <motion.ul
-              className="space-y-2"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-            >
-              <li>
-                <a href="#" className="text-white/70 hover:text-accent-300 transition-colors duration-300">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="text-white/70 hover:text-accent-300 transition-colors duration-300">
-                  Services
-                </a>
-              </li>
-              <li>
-                <a href="#features" className="text-white/70 hover:text-accent-300 transition-colors duration-300">
-                  Features
-                </a>
-              </li>
-              <li>
-                <a href="#case-studies" className="text-white/70 hover:text-accent-300 transition-colors duration-300">
-                  Case Studies
-                </a>
-              </li>
-            </motion.ul>
-          </div>
+          {/* Quick Links and Contact */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="grid grid-cols-2 gap-12"
+          >
+            {/* Quick Links */}
+            <div className="space-y-6">
+              <h4 className="text-xl font-semibold text-white/90">Quick Links</h4>
+              <ul className="space-y-3">
+                {[
+                  'Home',
+                  'Services',
+                  'Features',
+                  'Integrations',
+                  'Case Studies',
+                  'Contact'
+                ].map((link) => (
+                  <li key={link}>
+                    <a
+                      href={`#${link.toLowerCase().replace(' ', '-')}`}
+                      className="text-white/70 hover:text-accent-300 transition-all duration-300"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Contact */}
-          <div className="space-y-4">
-            <motion.h4
-              className="text-lg font-semibold text-white"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              Contact
-            </motion.h4>
-            <motion.ul
-              className="space-y-2"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-            >
-              <li className="text-white/70">
-                123 AI Street
-              </li>
-              <li className="text-white/70">
-                Tech City, TC 12345
-              </li>
-              <li>
-                <a href="mailto:contact@aibusiness.com" className="text-white/70 hover:text-accent-300 transition-colors duration-300">
-                  contact@aibusiness.com
-                </a>
-              </li>
-              <li>
-                <a href="tel:+1-555-123-4567" className="text-white/70 hover:text-accent-300 transition-colors duration-300">
-                  +1 (555) 123-4567
-                </a>
-              </li>
-            </motion.ul>
-          </div>
-
-          {/* Social Links */}
-          <div className="space-y-4">
-            <motion.h4
-              className="text-lg font-semibold text-white"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              Follow Us
-            </motion.h4>
-            <motion.div
-              className="flex space-x-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-            >
-              <motion.a
-                href="#"
-                className="text-white/70 hover:text-accent-300 transition-colors duration-300"
-                whileHover={{ y: -2 }}
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                </svg>
-              </motion.a>
-              <motion.a
-                href="#"
-                className="text-white/70 hover:text-accent-300 transition-colors duration-300"
-                whileHover={{ y: -2 }}
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                </svg>
-              </motion.a>
-              <motion.a
-                href="#"
-                className="text-white/70 hover:text-accent-300 transition-colors duration-300"
-                whileHover={{ y: -2 }}
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-2 16H8v-6h2v6zM9 9.109c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zM17 16h-2v-3.158c0-.674-.012-1.542-.935-1.542-.936 0-1.079.733-1.079 1.49V16h-2v-6h1.918v.875h.028c.24-.455.827-.935 1.703-.935 1.822 0 2.156 1.2 2.156 2.762V16z"/>
-                </svg>
-              </motion.a>
-            </motion.div>
-          </div>
+            {/* Contact */}
+            <div className="space-y-6">
+              <h4 className="text-xl font-semibold text-white/90">Contact</h4>
+              <ul className="space-y-3">
+                <li>
+                  <a href="mailto:contact@astronai.com" className="text-white/70 hover:text-accent-300 transition-all duration-300">
+                    contact@astronai.com
+                  </a>
+                </li>
+              </ul>
+              <div className="flex items-center space-x-4 pt-2">
+                {['facebook', 'twitter', 'linkedin'].map((social) => (
+                  <motion.a
+                    key={social}
+                    href={`#${social}`}
+                    className="text-white/60 hover:text-accent-300 transition-all duration-300"
+                    whileHover={{ scale: 1.1, y: -2 }}
+                  >
+                    <span className="sr-only">{social}</span>
+                    {social === 'facebook' && (
+                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
+                      </svg>
+                    )}
+                    {social === 'twitter' && (
+                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M23.643 4.937c-.835.37-1.732.62-2.675.733.962-.576 1.7-1.49 2.048-2.578-.9.534-1.897.922-2.958 1.13-.85-.904-2.06-1.47-3.4-1.47-2.572 0-4.658 2.086-4.658 4.66 0 .364.042.718.12 1.06-3.873-.195-7.304-2.05-9.602-4.868-.4.69-.63 1.49-.63 2.342 0 1.616.823 3.043 2.072 3.878-.764-.025-1.482-.234-2.11-.583v.06c0 2.257 1.605 4.14 3.737 4.568-.392.106-.803.162-1.227.162-.3 0-.593-.028-.877-.082.593 1.85 2.313 3.198 4.352 3.234-1.595 1.25-3.604 1.995-5.786 1.995-.376 0-.747-.022-1.112-.065 2.062 1.323 4.51 2.093 7.14 2.093 8.57 0 13.255-7.098 13.255-13.254 0-.2-.005-.402-.014-.602.91-.658 1.7-1.477 2.323-2.41z"/>
+                      </svg>
+                    )}
+                    {social === 'linkedin' && (
+                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z"/>
+                      </svg>
+                    )}
+                  </motion.a>
+                ))}
+              </div>
+            </div>
+          </motion.div>
         </div>
 
-        {/* Copyright */}
+        {/* Bottom Bar */}
         <motion.div
-          className="mt-12 pt-8 border-t border-white/10 text-center text-white/70"
+          className="mt-12 pt-6 border-t border-white/10 text-center md:text-left"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          <p>&copy; {new Date().getFullYear()} AI Business. All rights reserved.</p>
+          <p className="text-white/60 text-sm">
+            &copy; {new Date().getFullYear()} Astron AI. All rights reserved.
+          </p>
         </motion.div>
       </div>
     </footer>

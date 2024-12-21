@@ -1,11 +1,34 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Sphere } from '@react-three/drei'
 import * as THREE from 'three'
 
+const useWindowSize = () => {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 0,
+  });
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+      });
+    }
+    
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return windowSize;
+}
+
 const AnimatedSphere = () => {
   const sphereRef = useRef()
+  const { width } = useWindowSize()
+  const sphereSize = width < 768 ? 2.5 : 4 // Smaller sphere on mobile
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime()
@@ -15,7 +38,7 @@ const AnimatedSphere = () => {
   })
 
   return (
-    <Sphere ref={sphereRef} args={[4, 64, 64]}>
+    <Sphere ref={sphereRef} args={[sphereSize, 64, 64]}>
       <meshPhongMaterial
         color="#60a5fa"
         wireframe
@@ -29,13 +52,15 @@ const AnimatedSphere = () => {
 
 const ParticleField = () => {
   const count = 4000
+  const { width } = useWindowSize()
+  const sphereSize = width < 768 ? 2.5 : 4
   const positions = new Float32Array(count * 3)
   const velocities = new Float32Array(count * 3)
   const colors = new Float32Array(count * 3)
 
   for (let i = 0; i < count; i++) {
     const i3 = i * 3
-    const radius = 4 + Math.random() * 0.8 // Keep particles near sphere surface
+    const radius = sphereSize + Math.random() * 0.8 // Keep particles near sphere surface
     const theta = Math.random() * Math.PI * 2
     const phi = Math.random() * Math.PI
 
@@ -78,8 +103,11 @@ const ParticleField = () => {
         const z = positions[i3 + 2]
         const distance = Math.sqrt(x * x + y * y + z * z)
         
-        if (distance > 4.8 || distance < 3.2) {
-          const scale = (distance > 4.8 ? 4.8 : 3.2) / distance
+        const maxRadius = sphereSize + 0.8
+        const minRadius = sphereSize - 0.8
+        
+        if (distance > maxRadius || distance < minRadius) {
+          const scale = (distance > maxRadius ? maxRadius : minRadius) / distance
           positions[i3] *= scale
           positions[i3 + 1] *= scale
           positions[i3 + 2] *= scale
@@ -137,16 +165,17 @@ const ParticleField = () => {
 const Hero = () => {
   const { scrollYProgress } = useScroll()
   const y = useTransform(scrollYProgress, [0, 1], [0, 300])
+  const { width } = useWindowSize()
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary-900/95 via-primary-900 to-primary-900/95" />
       
       {/* 3D Canvas - Now positioned absolutely and centered */}
       <div className="absolute inset-0 w-full h-full">
         <Canvas
-          camera={{ position: [0, 0, 12], fov: 50 }}
+          camera={{ position: [0, 0, width < 768 ? 8 : 12], fov: 50 }}
           style={{ width: '100%', height: '100%' }}
         >
           <ambientLight intensity={0.5} />
@@ -174,32 +203,49 @@ const Hero = () => {
             transition={{ duration: 0.5 }}
             style={{ y }}
           >
-            <h1 className="heading-xl mb-8">
-              <span className="gradient-text-enhanced">AI-Powered</span> Solutions<br />
-              for Your Business
-            </h1>
-            
-            <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
-              Transform your business with cutting-edge artificial intelligence solutions.
-              We help companies leverage AI to drive growth and innovation.
-            </p>
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="text-4xl md:text-6xl font-bold mb-6"
+              >
+                <span className="bg-gradient-to-r from-accent-300 via-accent-400 to-accent-300 bg-clip-text text-transparent">
+                  AstronAI
+                </span>
+                <span className="text-white/90"> by Ishay Almuly</span>
+              </motion.h1>
 
-            <div className="flex flex-wrap gap-4 justify-center">
-              <motion.button
-                className="btn-primary"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-lg md:text-xl text-white/80 max-w-2xl mb-8"
               >
-                Get Started
-              </motion.button>
-              
-              <motion.button
-                className="btn-secondary"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                Revolutionizing business automation through advanced AI integration. 
+                Seamlessly connect your tools and workflows for enhanced productivity 
+                and intelligent decision-making.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="flex flex-col sm:flex-row gap-4"
               >
-                Learn More
-              </motion.button>
+                <a
+                  href="#contact"
+                  className="btn-primary px-8 py-4 text-lg"
+                >
+                  Get Started
+                </a>
+                <a
+                  href="#features"
+                  className="btn-secondary px-8 py-4 text-lg"
+                >
+                  Learn More
+                </a>
+              </motion.div>
             </div>
           </motion.div>
         </div>

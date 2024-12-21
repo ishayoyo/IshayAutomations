@@ -1,5 +1,39 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+
+const AutomationStep = ({ icon, label, isActive, isComplete, delay }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: isActive || isComplete ? 1 : 0.5, y: 0 }}
+    className={`flex items-center space-x-3 ${isActive ? 'scale-110' : 'scale-100'}`}
+    transition={{ delay }}
+  >
+    <div className={`w-10 h-10 rounded-full flex items-center justify-center relative ${
+      isComplete ? 'bg-green-500/20' : isActive ? 'bg-accent-400/20' : 'bg-white/10'
+    }`}>
+      <div className={`absolute inset-0 rounded-full ${
+        isActive ? 'animate-ping bg-accent-400/20' : ''
+      }`} />
+      {icon}
+      {isComplete && (
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="absolute inset-0 bg-green-500/20 rounded-full flex items-center justify-center"
+        >
+          <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </motion.div>
+      )}
+    </div>
+    <span className={`text-sm ${
+      isActive ? 'text-accent-300' : isComplete ? 'text-green-500' : 'text-white/70'
+    }`}>
+      {label}
+    </span>
+  </motion.div>
+)
 
 const CallToAction = () => {
   const [formState, setFormState] = useState({
@@ -10,20 +44,87 @@ const CallToAction = () => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [currentStep, setCurrentStep] = useState(0)
+  const [completedSteps, setCompletedSteps] = useState([])
+
+  const automationSteps = [
+    {
+      icon: (
+        <svg className="w-5 h-5 text-accent-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      label: "Form Submission"
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5 text-accent-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+      ),
+      label: "CRM Update"
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5 text-accent-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      ),
+      label: "Email Notification"
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5 text-accent-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      ),
+      label: "Calendar Check"
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5 text-accent-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      label: "Waiting for Reply"
+    }
+  ]
+
+  useEffect(() => {
+    if (isSubmitting) {
+      const stepInterval = setInterval(() => {
+        setCurrentStep(prev => {
+          if (prev >= automationSteps.length - 1) {
+            clearInterval(stepInterval)
+            return prev
+          }
+          setCompletedSteps(completed => [...completed, prev])
+          return prev + 1
+        })
+      }, 1000)
+
+      return () => clearInterval(stepInterval)
+    }
+  }, [isSubmitting])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setCurrentStep(0)
+    setCompletedSteps([])
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    // Simulate API calls and automation process
+    await new Promise((resolve) => setTimeout(resolve, 6000))
 
     setIsSubmitting(false)
     setIsSuccess(true)
+    setCompletedSteps(automationSteps.map((_, index) => index))
 
     // Reset form after success
     setTimeout(() => {
       setIsSuccess(false)
+      setCurrentStep(0)
+      setCompletedSteps([])
       setFormState({
         name: '',
         email: '',
@@ -40,11 +141,10 @@ const CallToAction = () => {
 
   return (
     <section id="contact" className="py-24 relative overflow-hidden">
-      {/* Background with gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary-900/95 via-primary-900 to-primary-900/95" />
       
       <div className="container relative z-10 mx-auto px-4">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -57,7 +157,7 @@ const CallToAction = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              Get Started
+              Let's Connect
             </motion.div>
             
             <motion.h2
@@ -66,7 +166,7 @@ const CallToAction = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              Ready to Transform Your Business?
+              Ready to Automate Your Business?
             </motion.h2>
             
             <motion.p
@@ -75,123 +175,51 @@ const CallToAction = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              Get in touch with our AI experts and discover how we can help you achieve your business goals
+              Experience the power of automation firsthand. Fill out the form below and watch our system work its magic.
             </motion.p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Content */}
+          <div className="grid md:grid-cols-2 gap-12 items-start">
+            {/* Form */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="space-y-8"
-            >
-              <div className="space-y-6">
-                <motion.div 
-                  className="card group hover:border-accent-400/50 transition-all duration-300"
-                  whileHover={{ y: -5 }}
-                >
-                  <div className="flex items-center space-x-6">
-                    <div className="w-14 h-14 rounded-full bg-primary-800/50 backdrop-blur-sm flex items-center justify-center relative border-2 border-accent-400 text-accent-400 group-hover:text-accent-300 transition-colors duration-300">
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-accent-400/10 to-secondary-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-white group-hover:text-accent-300 transition-colors duration-300">
-                        Email Us
-                      </h3>
-                      <p className="text-white/70 group-hover:text-white/90 transition-colors duration-300">
-                        contact@aibusiness.com
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                <motion.div 
-                  className="card group hover:border-accent-400/50 transition-all duration-300"
-                  whileHover={{ y: -5 }}
-                >
-                  <div className="flex items-center space-x-6">
-                    <div className="w-14 h-14 rounded-full bg-primary-800/50 backdrop-blur-sm flex items-center justify-center relative border-2 border-accent-400 text-accent-400 group-hover:text-accent-300 transition-colors duration-300">
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-accent-400/10 to-secondary-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-white group-hover:text-accent-300 transition-colors duration-300">
-                        Call Us
-                      </h3>
-                      <p className="text-white/70 group-hover:text-white/90 transition-colors duration-300">
-                        +1 (555) 123-4567
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </motion.div>
-
-            {/* Form */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
             >
               <form onSubmit={handleSubmit} className="space-y-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <input
-                    type="text"
-                    name="name"
-                    value={formState.name}
-                    onChange={handleChange}
-                    placeholder="Your Name"
-                    className="w-full px-4 py-3 rounded-lg bg-primary-800/50 backdrop-blur-sm border-2 border-accent-400/20 focus:border-accent-400 text-white placeholder-white/50 transition-all duration-300"
-                    required
-                  />
-                </motion.div>
+                <div className="grid grid-cols-2 gap-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <input
+                      type="text"
+                      name="name"
+                      value={formState.name}
+                      onChange={handleChange}
+                      placeholder="Your Name"
+                      className="w-full px-4 py-3 rounded-lg bg-primary-800/50 backdrop-blur-sm border-2 border-accent-400/20 focus:border-accent-400 text-white placeholder-white/50 transition-all duration-300"
+                      required
+                    />
+                  </motion.div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                >
-                  <input
-                    type="email"
-                    name="email"
-                    value={formState.email}
-                    onChange={handleChange}
-                    placeholder="Your Email"
-                    className="w-full px-4 py-3 rounded-lg bg-primary-800/50 backdrop-blur-sm border-2 border-accent-400/20 focus:border-accent-400 text-white placeholder-white/50 transition-all duration-300"
-                    required
-                  />
-                </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <input
+                      type="email"
+                      name="email"
+                      value={formState.email}
+                      onChange={handleChange}
+                      placeholder="Your Email"
+                      className="w-full px-4 py-3 rounded-lg bg-primary-800/50 backdrop-blur-sm border-2 border-accent-400/20 focus:border-accent-400 text-white placeholder-white/50 transition-all duration-300"
+                      required
+                    />
+                  </motion.div>
+                </div>
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -217,7 +245,7 @@ const CallToAction = () => {
                     name="message"
                     value={formState.message}
                     onChange={handleChange}
-                    placeholder="Your Message"
+                    placeholder="Tell us about your automation needs..."
                     rows={4}
                     className="w-full px-4 py-3 rounded-lg bg-primary-800/50 backdrop-blur-sm border-2 border-accent-400/20 focus:border-accent-400 text-white placeholder-white/50 transition-all duration-300 resize-none"
                     required
@@ -232,7 +260,7 @@ const CallToAction = () => {
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className={`w-full btn-primary relative overflow-hidden ${
                       isSubmitting ? 'opacity-80' : ''
@@ -252,14 +280,88 @@ const CallToAction = () => {
                     )}
                     <span className="relative z-10">
                       {isSuccess
-                        ? 'Message Sent!'
+                        ? 'Success! Check your email'
                         : isSubmitting
-                        ? 'Sending...'
-                        : 'Get Started'}
+                        ? 'Processing...'
+                        : 'Start Your Automation Journey'}
                     </span>
                   </motion.button>
                 </motion.div>
               </form>
+            </motion.div>
+
+            {/* Automation Visualization */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="relative"
+            >
+              <div className="card p-8 space-y-8">
+                <h3 className="text-xl font-semibold text-white/90 mb-8">Watch the Automation Magic</h3>
+                
+                <div className="space-y-6 relative">
+                  {/* Vertical line connecting steps */}
+                  <div className="absolute left-5 top-5 bottom-5 w-0.5 bg-white/10" />
+                  
+                  {automationSteps.map((step, index) => (
+                    <AutomationStep
+                      key={index}
+                      icon={step.icon}
+                      label={step.label}
+                      isActive={currentStep === index}
+                      isComplete={completedSteps.includes(index)}
+                      delay={index * 0.1}
+                    />
+                  ))}
+                </div>
+
+                {/* Additional Info */}
+                <AnimatePresence>
+                  {isSubmitting && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      className="text-sm text-white/60 pt-4"
+                    >
+                      {currentStep === 0 && "Processing your information..."}
+                      {currentStep === 1 && "Updating CRM records..."}
+                      {currentStep === 2 && "Sending confirmation email..."}
+                      {currentStep === 3 && "Checking calendar availability..."}
+                      {currentStep === 4 && "Preparing meeting suggestions..."}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Success Message */}
+              <AnimatePresence>
+                {isSuccess && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="absolute inset-0 flex items-center justify-center"
+                  >
+                    <div className="bg-primary-900/98 p-8 rounded-lg border-2 border-accent-400/20 backdrop-blur-sm w-full">
+                      <div className="text-center space-y-4">
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto"
+                        >
+                          <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </motion.div>
+                        <h4 className="text-xl font-semibold text-white">All Set!</h4>
+                        <p className="text-white/70">We'll be in touch shortly with next steps.</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           </div>
         </div>

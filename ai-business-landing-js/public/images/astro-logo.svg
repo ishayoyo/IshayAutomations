@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="320" height="70" viewBox="0 0 320 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Enhanced sphere gradient with cosmic colors -->
+    <linearGradient id="sphereGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:0.2" />
+      <stop offset="50%" style="stop-color:#3B82F6;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#2563EB;stop-opacity:0.2" />
+    </linearGradient>
+    
+    <!-- Vibrant text gradient -->
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563EB;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Ring gradients -->
+    <linearGradient id="ringGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:0.8" />
+    </linearGradient>
+
+    <linearGradient id="ringGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#2563EB;stop-opacity:0.4" />
+    </linearGradient>
+
+    <!-- Enhanced glow for elements -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Text glow with enhanced effect -->
+    <filter id="textGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feFlood flood-color="#3B82F6" flood-opacity="0.4"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Main Icon Group -->
+  <g transform="translate(15, 35)">
+    <!-- Main sphere with cosmic gradient -->
+    <circle cx="20" cy="0" r="22" fill="url(#sphereGradient)" stroke="#3B82F6" stroke-width="0.5" />
+    
+    <!-- Enhanced orbital rings -->
+    <ellipse cx="20" cy="0" rx="30" ry="10" 
+             stroke="url(#ringGradient1)"
+             stroke-width="1.5" 
+             fill="none" 
+             transform="rotate(-30,20,0)" />
+    
+    <ellipse cx="20" cy="0" rx="26" ry="13" 
+             stroke="url(#ringGradient2)"
+             stroke-width="1.2" 
+             fill="none" 
+             transform="rotate(30,20,0)" />
+
+    <!-- Stars with enhanced glow -->
+    <g filter="url(#glow)">
+      <!-- Larger stars with color -->
+      <circle cx="0" cy="0" r="1.5" fill="#8B5CF6" />
+      <circle cx="40" cy="0" r="1.5" fill="#3B82F6" />
+      <circle cx="20" cy="-20" r="1.5" fill="#2563EB" />
+      <circle cx="20" cy="20" r="1.5" fill="#8B5CF6" />
+      
+      <!-- Smaller stars -->
+      <circle cx="10" cy="-10" r="1" fill="#3B82F6" opacity="0.9" />
+      <circle cx="30" cy="10" r="1" fill="#8B5CF6" opacity="0.9" />
+      <circle cx="10" cy="10" r="1" fill="#2563EB" opacity="0.9" />
+      <circle cx="30" cy="-10" r="1" fill="#3B82F6" opacity="0.9" />
+      
+      <!-- Tiny accent stars -->
+      <circle cx="15" cy="-15" r="0.5" fill="#8B5CF6" opacity="0.7" />
+      <circle cx="25" cy="15" r="0.5" fill="#3B82F6" opacity="0.7" />
+      <circle cx="5" cy="5" r="0.5" fill="#2563EB" opacity="0.7" />
+      <circle cx="35" cy="-5" r="0.5" fill="#8B5CF6" opacity="0.7" />
+    </g>
+  </g>
+
+  <!-- Text Group -->
+  <g filter="url(#textGlow)">
+    <!-- ASTRON Text with Outline -->
+    <text x="75" y="47" 
+          font-family="Inter, -apple-system, 'Segoe UI', sans-serif" 
+          font-weight="800" 
+          font-size="36"
+          letter-spacing="1.5"
+          fill="white"
+          stroke="white"
+          stroke-width="0.5"
+          style="paint-order: stroke fill">
+      ASTRON
+    </text>
+    
+    <!-- AI Text with Special Styling -->
+    <text x="230" y="47" 
+          font-family="Inter, -apple-system, 'Segoe UI', sans-serif" 
+          font-weight="900" 
+          font-size="36"
+          letter-spacing="1"
+          fill="url(#textGradient)"
+          stroke="url(#textGradient)"
+          stroke-width="0.5"
+          style="paint-order: stroke fill">
+      AI
+    </text>
+  </g>
+
+  <!-- Decorative Line -->
+  <line x1="220" y1="25" x2="220" y2="50" 
+        stroke="url(#textGradient)" 
+        stroke-width="0.5" 
+        stroke-opacity="0.3" />
+</svg> 

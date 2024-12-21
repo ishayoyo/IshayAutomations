@@ -1,16 +1,16 @@
-import { useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const integrations = [
   {
-    name: 'AWS',
-    icon: '/images/aws.svg',
-    category: 'Cloud',
+    name: 'React',
+    icon: '/images/react.svg',
+    category: 'Development',
   },
   {
-    name: 'Google Cloud',
-    icon: '/images/gcp.svg',
-    category: 'Cloud',
+    name: 'Express',
+    icon: '/images/express.svg',
+    category: 'Development',
   },
   {
     name: 'Azure',
@@ -18,19 +18,59 @@ const integrations = [
     category: 'Cloud',
   },
   {
-    name: 'TensorFlow',
-    icon: '/images/tensorflow.svg',
-    category: 'ML',
+    name: 'AWS',
+    icon: '/images/aws.svg',
+    category: 'Cloud',
   },
   {
-    name: 'PyTorch',
-    icon: '/images/pytorch.svg',
-    category: 'ML',
+    name: 'GCP',
+    icon: '/images/gcp.svg',
+    category: 'Cloud',
   },
   {
-    name: 'Kubernetes',
-    icon: '/images/kubernetes.svg',
-    category: 'DevOps',
+    name: 'Telegram',
+    icon: '/images/telegram.svg',
+    category: 'Communication',
+  },
+  {
+    name: 'WhatsApp',
+    icon: '/images/whatsapp.svg',
+    category: 'Communication',
+  },
+  {
+    name: 'Slack',
+    icon: '/images/slack.svg',
+    category: 'Communication',
+  },
+  {
+    name: 'OneDrive',
+    icon: '/images/onedrive.svg',
+    category: 'Storage',
+  },
+  {
+    name: 'Google Drive',
+    icon: '/images/gdrive.svg',
+    category: 'Storage',
+  },
+  {
+    name: 'Dropbox',
+    icon: '/images/dropbox.svg',
+    category: 'Storage',
+  },
+  {
+    name: 'Gmail',
+    icon: '/images/gmail.svg',
+    category: 'Communication',
+  },
+  {
+    name: 'Google Workspace',
+    icon: '/images/google-workspace.svg',
+    category: 'Productivity',
+  },
+  {
+    name: 'GitHub',
+    icon: '/images/github.svg',
+    category: 'Development',
   },
   {
     name: 'Docker',
@@ -38,14 +78,69 @@ const integrations = [
     category: 'DevOps',
   },
   {
-    name: 'GitHub',
-    icon: '/images/github.svg',
+    name: 'Kubernetes',
+    icon: '/images/kubernetes.svg',
     category: 'DevOps',
   },
+  {
+    name: 'MongoDB',
+    icon: '/images/mongodb.svg',
+    category: 'Database',
+  },
+  {
+    name: 'Salesforce',
+    icon: '/images/salesforce.svg',
+    category: 'CRM',
+  },
+  {
+    name: 'Stripe',
+    icon: '/images/stripe.svg',
+    category: 'Payment',
+  },
+  {
+    name: 'OpenAI',
+    icon: '/images/openai.svg',
+    category: 'AI',
+  },
+  {
+    name: 'Claude AI',
+    icon: '/images/claude.svg',
+    category: 'AI',
+  },
+  {
+    name: 'Google Gemini',
+    icon: '/images/gemini.svg',
+    category: 'AI',
+  },
+  {
+    name: 'PyTorch',
+    icon: '/images/pytorch.svg',
+    category: 'AI',
+  },
+  {
+    name: 'TensorFlow',
+    icon: '/images/tensorflow.svg',
+    category: 'AI',
+  }
+]
+
+const colors = [
+  '#4285f4', // Google Blue
+  '#00a1e0', // Salesforce Blue
+  '#2496ed', // Docker Blue
+  '#326ce5', // Kubernetes Blue
+  '#47A248', // MongoDB Green
+  '#e01e5a', // Slack Pink
+  '#ffd04b', // Yellow
+  '#ff4f64', // Red
+  '#7b61ff', // Purple
+  '#00c4b4', // Teal
+  '#61DAFB', // React Blue
 ]
 
 const Integrations = () => {
   const canvasRef = useRef()
+  const [activeFlows, setActiveFlows] = useState([])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -55,50 +150,157 @@ const Integrations = () => {
     if (!ctx) return
 
     let animationFrameId
-    let points = []
+    let points = {}
+    let time = 0
+    let activeConnections = new Set()
 
     const initPoints = () => {
       const logos = document.querySelectorAll('.integration-logo')
-      points = Array.from(logos).map((logo) => {
+      logos.forEach((logo) => {
         const rect = logo.getBoundingClientRect()
         const canvasRect = canvas.getBoundingClientRect()
-        return {
+        points[logo.dataset.name] = {
           x: rect.left - canvasRect.left + rect.width / 2,
-          y: rect.top - canvasRect.top + rect.height / 2,
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
+          y: rect.top - canvasRect.top + rect.height / 2
         }
       })
     }
 
+    // Generate new random connections periodically
+    const generateConnections = () => {
+      const services = Object.keys(points)
+      const newConnections = new Set()
+      const oldConnections = activeConnections
+      
+      // Each service will connect to 3-4 others (increased from 2-3)
+      services.forEach(service => {
+        const connectionCount = 3 + Math.floor(Math.random())
+        const availableServices = services.filter(s => s !== service && !newConnections.has(`${s}-${service}`))
+        
+        // Try to keep some existing connections for smoothness
+        const existingConnections = Array.from(oldConnections)
+          .filter(conn => conn.includes(service))
+          .slice(0, 2)
+
+        existingConnections.forEach(conn => {
+          newConnections.add(conn)
+        })
+        
+        // Add new connections
+        const remainingCount = connectionCount - existingConnections.length
+        for (let i = 0; i < remainingCount && availableServices.length > 0; i++) {
+          const targetIndex = Math.floor(Math.random() * availableServices.length)
+          const target = availableServices[targetIndex]
+          newConnections.add(`${service}-${target}`)
+          availableServices.splice(targetIndex, 1)
+        }
+      })
+      
+      activeConnections = newConnections
+    }
+
     const drawConnections = () => {
       if (!ctx || !canvas) return
+      time += 0.003 // Even slower time progression for smoother animation
 
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      
-      // Create gradient for lines
-      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
-      gradient.addColorStop(0, 'rgba(108, 43, 217, 0.3)')  // accent-400 with opacity
-      gradient.addColorStop(1, 'rgba(99, 102, 241, 0.3)')  // secondary-400 with opacity
-      
-      ctx.strokeStyle = gradient
-      ctx.lineWidth = 0.5
 
-      for (let i = 0; i < points.length; i++) {
-        for (let j = i + 1; j < points.length; j++) {
-          const dx = points[j].x - points[i].x
-          const dy = points[j].y - points[i].y
-          const distance = Math.sqrt(dx * dx + dy * dy)
+      // Draw all active connections
+      Array.from(activeConnections).forEach(connection => {
+        const [from, to] = connection.split('-')
+        const start = points[from]
+        const end = points[to]
+        
+        if (!start || !end) return
 
-          if (distance < 200) {
+        const dx = end.x - start.x
+        const dy = end.y - start.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
+
+        if (distance < canvas.width) {
+          const midX = (start.x + end.x) / 2
+          const midY = (start.y + end.y) / 2
+
+          // Create unique but consistent color for this connection
+          const colorIndex = (from.charCodeAt(0) + to.charCodeAt(0)) % colors.length
+          const baseColor = colors[colorIndex]
+
+          // Draw subtle connection line with increased width
+          ctx.beginPath()
+          ctx.strokeStyle = baseColor + '15' // Slightly more visible base line
+          ctx.lineWidth = 0.8
+          
+          // Create organic curved path with smoother movement
+          const offset = Math.sin(time + from.charCodeAt(0) * 0.05) * 20
+          const controlPoint1X = start.x + dx * 0.25
+          const controlPoint1Y = start.y + dy * 0.25 + offset
+          const controlPoint2X = start.x + dx * 0.75
+          const controlPoint2Y = start.y + dy * 0.75 - offset
+
+          ctx.moveTo(start.x, start.y)
+          ctx.bezierCurveTo(
+            controlPoint1X, controlPoint1Y,
+            controlPoint2X, controlPoint2Y,
+            end.x, end.y
+          )
+          ctx.stroke()
+
+          // Draw flowing particles with more particles and longer trails
+          const particleCount = 3 // Increased from 2
+          for (let i = 0; i < particleCount; i++) {
+            const t = ((time * 0.2) + i / particleCount) % 1 // Slower particle movement
+            
+            // Bezier curve point calculation
+            const u = 1 - t
+            const tt = t * t
+            const uu = u * u
+            const uuu = uu * u
+            const ttt = tt * t
+            
+            const x = uuu * start.x +
+                     3 * uu * t * controlPoint1X +
+                     3 * u * tt * controlPoint2X +
+                     ttt * end.x
+                     
+            const y = uuu * start.y +
+                     3 * uu * t * controlPoint1Y +
+                     3 * u * tt * controlPoint2Y +
+                     ttt * end.y
+
+            // Draw larger particle
             ctx.beginPath()
-            ctx.moveTo(points[i].x, points[i].y)
-            ctx.lineTo(points[j].x, points[j].y)
-            ctx.globalAlpha = 1 - distance / 200
-            ctx.stroke()
+            ctx.fillStyle = baseColor + 'ee' // More opaque particles
+            ctx.arc(x, y, 1.2, 0, Math.PI * 2)
+            ctx.fill()
+
+            // Draw longer particle trail
+            const trailLength = 8 // Increased from 5
+            for (let j = 1; j <= trailLength; j++) {
+              const trailT = Math.max(0, t - j * 0.008) // Longer trail segments
+              const u = 1 - trailT
+              const tt = trailT * trailT
+              const uu = u * u
+              const uuu = uu * u
+              const ttt = tt * trailT
+              
+              const trailX = uuu * start.x +
+                            3 * uu * trailT * controlPoint1X +
+                            3 * u * tt * controlPoint2X +
+                            ttt * end.x
+                            
+              const trailY = uuu * start.y +
+                            3 * uu * trailT * controlPoint1Y +
+                            3 * u * tt * controlPoint2Y +
+                            ttt * end.y
+
+              ctx.beginPath()
+              ctx.fillStyle = baseColor + (50 - j * 5).toString(16) // Slower fade for trail
+              ctx.arc(trailX, trailY, 1 - j * 0.08, 0, Math.PI * 2)
+              ctx.fill()
+            }
           }
         }
-      }
+      })
     }
 
     const animate = () => {
@@ -113,110 +315,79 @@ const Integrations = () => {
       initPoints()
     }
 
+    // Initialize connections
     handleResize()
+    generateConnections()
+
+    // Regenerate connections less frequently
+    const connectionInterval = setInterval(() => {
+      generateConnections()
+    }, 12000) // Changed from 8000 to 12000ms
+
     window.addEventListener('resize', handleResize)
     animate()
 
     return () => {
       window.removeEventListener('resize', handleResize)
       cancelAnimationFrame(animationFrameId)
+      clearInterval(connectionInterval)
     }
   }, [])
 
   return (
     <section id="integrations" className="py-24 relative overflow-hidden">
-      {/* Background with gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary-900/95 via-primary-900 to-primary-900/95" />
       
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
-        style={{ pointerEvents: 'none' }}
+        style={{ pointerEvents: 'none', opacity: 0.8 }}
       />
       
       <div className="container relative z-10 mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16 space-y-4"
-        >
-          <motion.div 
-            className="text-accent-400 uppercase tracking-widest text-sm font-bold mb-6"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+        <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.5 }}
           >
-            Technology Stack
+            <h2 className="heading-lg mb-4">
+              <span className="gradient-text-enhanced">System Integrations</span>
+            </h2>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto">
+              Seamlessly connecting and automating your technology ecosystem
+            </p>
           </motion.div>
-          
-          <motion.h2
-            className="heading-lg gradient-text-enhanced mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            Seamless Integrations
-          </motion.h2>
-          
-          <motion.p
-            className="text-xl text-white/80 max-w-3xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            Our platform integrates with the leading tools and services in the industry
-          </motion.p>
-        </motion.div>
+        </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-6 max-w-6xl mx-auto">
           {integrations.map((integration, index) => (
             <motion.div
               key={integration.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.05 }}
-              className="integration-logo"
+              transition={{ delay: index * 0.05 }}
+              className="integration-logo relative"
+              data-name={integration.name}
             >
-              <div className="card group hover:border-accent-400/50 transition-all duration-300">
-                <div className="relative h-32 flex items-center justify-center">
+              <div className="card-sm group">
+                <div className="relative h-16 flex items-center justify-center">
                   <div className="absolute inset-0 bg-gradient-to-br from-accent-400/5 to-secondary-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <img
                     src={integration.icon}
                     alt={integration.name}
-                    className="w-16 h-16 object-contain filter grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                    className="w-10 h-10 object-contain"
                   />
                 </div>
-                <p className="text-center mt-4 text-white/70 group-hover:text-accent-300 transition-colors duration-300">
+                <p className="text-center text-sm mt-2 text-white/70">
                   {integration.name}
                 </p>
               </div>
             </motion.div>
           ))}
         </div>
-
-        {/* Call to Action */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="text-center mt-20"
-        >
-          <motion.button
-            className="btn-primary"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            Explore All Integrations
-          </motion.button>
-        </motion.div>
       </div>
     </section>
   )

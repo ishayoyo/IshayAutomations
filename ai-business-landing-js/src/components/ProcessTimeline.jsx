@@ -2,8 +2,8 @@ import { motion } from 'framer-motion'
 
 const steps = [
   {
-    title: 'Initial Consultation',
-    description: 'We analyze your business needs and identify AI opportunities.',
+    title: 'Initial Assessment',
+    description: 'I analyze your existing systems and identify opportunities for AI integration, ensuring a clear understanding of your business needs.',
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
@@ -16,8 +16,8 @@ const steps = [
     ),
   },
   {
-    title: 'Strategy Development',
-    description: 'We create a tailored AI implementation roadmap.',
+    title: 'System Architecture',
+    description: 'I design a custom AI architecture that integrates seamlessly with your existing infrastructure, focusing on scalability and performance.',
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
@@ -30,8 +30,8 @@ const steps = [
     ),
   },
   {
-    title: 'Implementation',
-    description: 'Our experts deploy and integrate AI solutions.',
+    title: 'API Integration',
+    description: 'I implement and connect necessary APIs, setting up the foundation for automated processes and AI-driven functionalities.',
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
@@ -50,8 +50,8 @@ const steps = [
     ),
   },
   {
-    title: 'Training & Support',
-    description: 'We ensure your team is equipped for success.',
+    title: 'Automation Setup',
+    description: 'I develop and implement custom automation workflows, optimizing your processes for maximum efficiency.',
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
@@ -85,7 +85,7 @@ const ProcessTimeline = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Our Process
+            My Implementation Process
           </motion.div>
           
           <motion.h2
@@ -95,7 +95,7 @@ const ProcessTimeline = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            How We Work
+            How I Implement AI Solutions
           </motion.h2>
           
           <motion.p
@@ -105,24 +105,30 @@ const ProcessTimeline = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            Our proven methodology ensures successful AI implementation
+            I follow a systematic approach to ensure successful AI integration and automation for your business
           </motion.p>
         </motion.div>
 
         <div className="max-w-5xl mx-auto">
           <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-gradient-to-b from-accent-400 to-secondary-400" />
+            {/* Animated Timeline line */}
+            <motion.div 
+              className="absolute left-1/2 transform -translate-x-1/2 w-0.5 bg-gradient-to-b from-accent-400 to-secondary-400"
+              initial={{ height: 0 }}
+              whileInView={{ height: "100%" }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+            />
 
             {/* Steps */}
             <div className="space-y-20">
               {steps.map((step, index) => (
                 <motion.div
                   key={step.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  transition={{ duration: 0.7, delay: index * 0.2 }}
                   className={`relative flex items-center ${
                     index % 2 === 0 ? 'justify-start' : 'justify-end'
                   }`}
@@ -132,11 +138,19 @@ const ProcessTimeline = () => {
                       index % 2 === 0 ? 'pr-12 text-right' : 'pl-12 text-left'
                     }`}
                   >
-                    <div className="card group hover:border-accent-400/50 transition-all duration-300">
+                    <motion.div 
+                      className="card group hover:border-accent-400/50 transition-all duration-300"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
                       <div className="relative z-10">
-                        <div className="mb-4 text-accent-400 group-hover:text-accent-300 transition-colors duration-300">
+                        <motion.div 
+                          className="mb-4 text-accent-400 group-hover:text-accent-300 transition-colors duration-300"
+                          animate={{ rotate: [0, 360] }}
+                          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                        >
                           {step.icon}
-                        </div>
+                        </motion.div>
                         <h3 className="text-xl font-bold mb-2 text-white group-hover:text-accent-300 transition-colors duration-300">
                           {step.title}
                         </h3>
@@ -146,11 +160,17 @@ const ProcessTimeline = () => {
                       </div>
                       
                       <div className="absolute inset-0 bg-gradient-to-br from-accent-400/10 to-secondary-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
+                    </motion.div>
                   </div>
 
-                  {/* Timeline dot */}
-                  <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-accent-400 border-4 border-primary-900" />
+                  {/* Animated Timeline dot */}
+                  <motion.div 
+                    className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-accent-400 border-4 border-primary-900"
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.2 }}
+                  />
                 </motion.div>
               ))}
             </div>
