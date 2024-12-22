@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import Analytics from './components/Analytics'
 import Hero from './components/Hero'
 import Services from './components/Services'
 import Features from './components/Features'
@@ -65,6 +66,7 @@ function App() {
         </div>
       </main>
       <Footer />
+      <Analytics />
     </div>
   )
 }
