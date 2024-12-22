@@ -8,6 +8,11 @@ const Analytics = () => {
       CLARITY_ID: import.meta.env.VITE_CLARITY_ID
     });
 
+    // Initialize Clarity
+    if (window.clarityInit) {
+      window.clarityInit();
+    }
+
     // Function to check if scripts are loaded
     const checkScriptsLoaded = () => {
       return new Promise((resolve) => {
@@ -26,10 +31,15 @@ const Analytics = () => {
       });
     };
 
+    let isAnalyticsInitialized = false;
+
     // Initialize analytics after scripts are loaded
     const initializeAnalytics = async () => {
       try {
         await checkScriptsLoaded();
+
+        if (isAnalyticsInitialized) return;
+        isAnalyticsInitialized = true;
 
         // Verify analytics are working
         const verifyAnalytics = () => {
@@ -38,7 +48,7 @@ const Analytics = () => {
             if (typeof window.clarity === 'function') {
               console.log('✅ Microsoft Clarity is working');
               // Test custom event
-              window.clarity("event", "analytics_check");
+              window.clarity("set", "analytics_initialized", "true");
             } else {
               console.warn('❌ Microsoft Clarity is not initialized');
             }
@@ -47,7 +57,7 @@ const Analytics = () => {
             if (typeof window.gtag === 'function') {
               console.log('✅ Google Analytics is working');
               // Test event
-              window.gtag('event', 'analytics_check', {
+              window.gtag('event', 'analytics_initialized', {
                 'event_category': 'verification',
                 'event_label': 'startup'
               });
@@ -84,7 +94,7 @@ const Analytics = () => {
         const trackButtonClick = (buttonName) => {
           try {
             if (typeof window.clarity === 'function') {
-              window.clarity("event", `click_${buttonName}`);
+              window.clarity("set", "button_clicked", buttonName);
             }
             if (typeof window.gtag === 'function') {
               window.gtag('event', 'button_click', {
@@ -100,7 +110,7 @@ const Analytics = () => {
         const trackFormSubmission = (formName) => {
           try {
             if (typeof window.clarity === 'function') {
-              window.clarity("event", `form_submit_${formName}`);
+              window.clarity("set", "form_submitted", formName);
             }
             if (typeof window.gtag === 'function') {
               window.gtag('event', 'form_submission', {
@@ -153,6 +163,11 @@ const Analytics = () => {
 
     // Start initialization
     initializeAnalytics();
+
+    // Cleanup
+    return () => {
+      isAnalyticsInitialized = false;
+    };
   }, []);
 
   return null;
