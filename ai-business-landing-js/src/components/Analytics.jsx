@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 
+//update
 const Analytics = () => {
   useEffect(() => {
     // Verify analytics are working
