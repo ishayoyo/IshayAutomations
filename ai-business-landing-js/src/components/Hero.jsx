@@ -28,14 +28,13 @@ const useWindowSize = () => {
 const AnimatedSphere = () => {
   const sphereRef = useRef()
   const { width } = useWindowSize()
-  const sphereSize = width < 768 ? 1.8 : 4 // Smaller sphere on mobile
-  const segments = width < 768 ? 32 : 64 // Reduced segments on mobile
+  const sphereSize = width < 768 ? 2.2 : 5
+  const segments = width < 768 ? 32 : 64
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime()
     if (sphereRef.current) {
-      // Slower rotation on mobile
-      sphereRef.current.rotation.y = time * (width < 768 ? 0.05 : 0.1)
+      sphereRef.current.rotation.y = time * (width < 768 ? 0.03 : 0.05)
     }
   })
 
@@ -45,7 +44,7 @@ const AnimatedSphere = () => {
         color="#60a5fa"
         wireframe
         transparent
-        opacity={0.1}
+        opacity={0.08}
         side={THREE.DoubleSide}
       />
     </Sphere>
@@ -54,20 +53,18 @@ const AnimatedSphere = () => {
 
 const ParticleField = () => {
   const { width } = useWindowSize()
-  // Significantly reduce particle count on mobile
-  const count = width < 768 ? 800 : 4000
-  const sphereSize = width < 768 ? 1.8 : 4
+  const count = width < 768 ? 400 : 2000
+  const sphereSize = width < 768 ? 2.2 : 5
   const positions = new Float32Array(count * 3)
   const velocities = new Float32Array(count * 3)
   const colors = new Float32Array(count * 3)
 
-  // Frame rate control for mobile
   const frameSkip = useRef(0)
-  const maxFrameSkip = width < 768 ? 2 : 0 // Skip frames on mobile
+  const maxFrameSkip = width < 768 ? 2 : 0
 
   for (let i = 0; i < count; i++) {
     const i3 = i * 3
-    const radius = sphereSize + Math.random() * (width < 768 ? 0.4 : 0.8) // Smaller spread on mobile
+    const radius = sphereSize + Math.random() * (width < 768 ? 0.8 : 1.5)
     const theta = Math.random() * Math.PI * 2
     const phi = Math.random() * Math.PI
 
@@ -75,8 +72,7 @@ const ParticleField = () => {
     positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta)
     positions[i3 + 2] = radius * Math.cos(phi)
 
-    // Slower particle movement on mobile
-    const velocityFactor = width < 768 ? 0.008 : 0.015
+    const velocityFactor = width < 768 ? 0.005 : 0.008
     velocities[i3] = (Math.random() - 0.5) * velocityFactor
     velocities[i3 + 1] = (Math.random() - 0.5) * velocityFactor
     velocities[i3 + 2] = (Math.random() - 0.5) * velocityFactor
@@ -92,7 +88,6 @@ const ParticleField = () => {
   const points = useRef()
 
   useFrame(() => {
-    // Frame skipping for mobile
     if (frameSkip.current < maxFrameSkip) {
       frameSkip.current++
       return
@@ -114,8 +109,8 @@ const ParticleField = () => {
         const z = positions[i3 + 2]
         const distance = Math.sqrt(x * x + y * y + z * z)
         
-        const maxRadius = sphereSize + (width < 768 ? 0.4 : 0.8)
-        const minRadius = sphereSize - (width < 768 ? 0.4 : 0.8)
+        const maxRadius = sphereSize + (width < 768 ? 0.8 : 1.5)
+        const minRadius = sphereSize - (width < 768 ? 0.8 : 1.5)
         
         if (distance > maxRadius || distance < minRadius) {
           const scale = (distance > maxRadius ? maxRadius : minRadius) / distance
@@ -163,10 +158,10 @@ const ParticleField = () => {
       <pointsMaterial
         ref={material}
         vertexColors
-        size={width < 768 ? 0.03 : 0.04}
+        size={width < 768 ? 0.04 : 0.05}
         sizeAttenuation={true}
         transparent={true}
-        opacity={width < 768 ? 0.4 : 0.6}
+        opacity={width < 768 ? 0.4 : 0.5}
         blending={THREE.AdditiveBlending}
       />
     </points>
@@ -184,9 +179,9 @@ const Hero = () => {
       
       <div className="absolute inset-0 w-full h-full">
         <Canvas
-          camera={{ position: [0, 0, width < 768 ? 8 : 12], fov: 50 }}
+          camera={{ position: [0, 0, width < 768 ? 10 : 15], fov: 45 }}
           style={{ width: '100%', height: '100%' }}
-          dpr={width < 768 ? 1 : window.devicePixelRatio} // Lower resolution on mobile
+          dpr={width < 768 ? 1 : window.devicePixelRatio}
         >
           <ambientLight intensity={0.5} />
           <pointLight position={[10, 10, 10]} />
@@ -199,7 +194,7 @@ const Hero = () => {
             enablePan={false} 
             enableRotate={true}
             autoRotate={true}
-            autoRotateSpeed={width < 768 ? 0.2 : 0.3}
+            autoRotateSpeed={width < 768 ? 0.1 : 0.2}
           />
         </Canvas>
       </div>

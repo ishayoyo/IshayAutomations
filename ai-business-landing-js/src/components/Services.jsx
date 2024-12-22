@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
 
 const services = [
   {
@@ -45,11 +46,110 @@ const services = [
   },
 ]
 
+const ConnectingWires = () => {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    let animationFrameId
+    let particles = []
+    
+    const resize = () => {
+      canvas.width = canvas.offsetWidth
+      canvas.height = canvas.offsetHeight
+    }
+
+    const createParticles = () => {
+      particles = []
+      const numParticles = 50
+      for (let i = 0; i < numParticles; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+        })
+      }
+    }
+
+    const drawParticles = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      
+      // Update and draw particles
+      particles.forEach((particle, i) => {
+        particle.x += particle.vx
+        particle.y += particle.vy
+
+        // Bounce off edges
+        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
+        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1
+
+        // Draw particle
+        ctx.beginPath()
+        ctx.arc(particle.x, particle.y, 1, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(96, 165, 250, 0.5)'
+        ctx.fill()
+
+        // Connect particles within range
+        particles.slice(i + 1).forEach(other => {
+          const dx = other.x - particle.x
+          const dy = other.y - particle.y
+          const distance = Math.sqrt(dx * dx + dy * dy)
+
+          if (distance < 100) {
+            ctx.beginPath()
+            ctx.moveTo(particle.x, particle.y)
+            ctx.lineTo(other.x, other.y)
+            ctx.strokeStyle = `rgba(96, 165, 250, ${0.2 * (1 - distance / 100)})`
+            ctx.lineWidth = 0.5
+            ctx.stroke()
+          }
+        })
+      })
+
+      animationFrameId = requestAnimationFrame(drawParticles)
+    }
+
+    resize()
+    createParticles()
+    drawParticles()
+
+    window.addEventListener('resize', () => {
+      resize()
+      createParticles()
+    })
+
+    return () => {
+      cancelAnimationFrame(animationFrameId)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full"
+      style={{ pointerEvents: 'none' }}
+    />
+  )
+}
+
 const Services = () => {
+  const handleGetStarted = () => {
+    const contactSection = document.getElementById('contact')
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <section id="services" className="py-24 relative overflow-hidden">
       {/* Background with gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary-900/95 via-primary-900 to-primary-900/95" />
+      
+      {/* Connecting wires animation */}
+      <ConnectingWires />
       
       <div className="container relative z-10 mx-auto px-4">
         <motion.div
@@ -98,14 +198,25 @@ const Services = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
               className="relative group"
             >
-              <div className="card overflow-hidden group-hover:border-accent-400/50 transition-all duration-300 min-h-[280px]">
-                <div className="relative z-10 flex flex-col items-center text-center">
-                  <div className="mb-6 text-accent-400 group-hover:text-accent-300 transition-colors duration-300">
+              <motion.div 
+                className="card overflow-hidden group-hover:border-accent-400/50 transition-all duration-300 min-h-[280px]"
+                whileHover={{ 
+                  y: -5,
+                  boxShadow: '0 0 20px rgba(96, 165, 250, 0.3)',
+                  transition: { duration: 0.2 }
+                }}
+              >
+                <div className="relative z-10 flex flex-col items-center text-center p-6">
+                  <motion.div 
+                    className="mb-6 text-accent-400 group-hover:text-accent-300 transition-colors duration-300"
+                    whileHover={{ rotate: 360, scale: 1.1 }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                  >
                     {service.icon}
-                  </div>
+                  </motion.div>
                   <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-accent-300 transition-colors duration-300">
                     {service.title}
                   </h3>
@@ -114,8 +225,13 @@ const Services = () => {
                   </p>
                 </div>
                 
-                <div className="absolute inset-0 bg-gradient-to-br from-accent-400/10 to-secondary-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-br from-accent-400/10 to-secondary-400/10"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </motion.div>
             </motion.div>
           ))}
         </div>
@@ -128,11 +244,15 @@ const Services = () => {
           className="text-center mt-16"
         >
           <motion.button
-            className="btn-primary"
-            whileHover={{ scale: 1.05 }}
+            onClick={handleGetStarted}
+            className="btn-primary px-8 py-3 text-lg font-semibold"
+            whileHover={{ 
+              scale: 1.05,
+              boxShadow: "0 0 25px rgba(96, 165, 250, 0.5)"
+            }}
             whileTap={{ scale: 0.98 }}
           >
-            Let's Discuss Your Project
+            Let's Get Started
           </motion.button>
         </motion.div>
       </div>
