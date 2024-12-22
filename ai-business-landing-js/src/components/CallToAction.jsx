@@ -40,6 +40,7 @@ const CallToAction = () => {
   const [formState, setFormState] = useState({
     name: '',
     email: '',
+    phone: '',
     company: '',
     message: '',
   })
@@ -122,6 +123,7 @@ const CallToAction = () => {
           {
             name: formState.name,
             email: formState.email,
+            phone: formState.phone,
             company: formState.company,
             message: formState.message,
             created_at: new Date().toISOString(),
@@ -130,20 +132,30 @@ const CallToAction = () => {
 
       if (error) throw error
 
-      // Send Telegram notification
+      // Send Telegram notification with updated format
       const telegramMessage = `
-🌟 <b>New Lead Alert!</b> 🌟
+🚀 <b>New Lead from AstronAI!</b>
 
-👤 <b>Name:</b> ${formState.name}
-📧 <b>Email:</b> ${formState.email}
-🏢 <b>Company:</b> ${formState.company || 'Not provided'}
+👤 <b>Contact Information:</b>
+• Name: ${formState.name}
+• Email: ${formState.email}
+• Phone: ${formState.phone || 'Not provided'}
+• Company: ${formState.company || 'Not provided'}
 
 💬 <b>Message:</b>
 <i>${formState.message}</i>
 
-📅 <code>${new Date().toLocaleString()}</code>
-------------------
-Powered by IshayAutomations`
+⏰ Received: <code>${new Date().toLocaleString('en-US', { 
+  weekday: 'long', 
+  year: 'numeric', 
+  month: 'long', 
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+})}</code>
+
+🔗 <b>Source:</b> Website Contact Form
+#NewLead #AstronAI`
       
       await fetch(`https://api.telegram.org/bot${import.meta.env.VITE_TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
@@ -177,6 +189,7 @@ Powered by IshayAutomations`
       setFormState({
         name: '',
         email: '',
+        phone: '',
         company: '',
         message: '',
       })
@@ -270,20 +283,37 @@ Powered by IshayAutomations`
                   </motion.div>
                 </div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 }}
-                >
-                  <input
-                    type="text"
-                    name="company"
-                    value={formState.company}
-                    onChange={handleChange}
-                    placeholder="Company Name"
-                    className="w-full px-4 py-3 rounded-lg bg-primary-800/50 backdrop-blur-sm border-2 border-accent-400/20 focus:border-accent-400 text-white placeholder-white/50 transition-all duration-300"
-                  />
-                </motion.div>
+                <div className="grid grid-cols-2 gap-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formState.phone}
+                      onChange={handleChange}
+                      placeholder="Phone Number"
+                      className="w-full px-4 py-3 rounded-lg bg-primary-800/50 backdrop-blur-sm border-2 border-accent-400/20 focus:border-accent-400 text-white placeholder-white/50 transition-all duration-300"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7 }}
+                  >
+                    <input
+                      type="text"
+                      name="company"
+                      value={formState.company}
+                      onChange={handleChange}
+                      placeholder="Company Name"
+                      className="w-full px-4 py-3 rounded-lg bg-primary-800/50 backdrop-blur-sm border-2 border-accent-400/20 focus:border-accent-400 text-white placeholder-white/50 transition-all duration-300"
+                    />
+                  </motion.div>
+                </div>
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
