@@ -8,6 +8,50 @@ const Analytics = () => {
       CLARITY_ID: import.meta.env.VITE_CLARITY_ID
     });
 
+    // Load Google Analytics Script
+    const loadGoogleAnalytics = () => {
+      const script = document.createElement('script');
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.VITE_GA_ID}`;
+      script.async = true;
+      document.head.appendChild(script);
+
+      script.onload = () => {
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          window.dataLayer.push(arguments);
+        }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', import.meta.env.VITE_GA_ID);
+      };
+    };
+
+    // Load Clarity Script
+    const loadClarity = () => {
+      const script = document.createElement('script');
+      script.innerHTML = `
+        (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "${import.meta.env.VITE_CLARITY_ID}");
+      `;
+      document.head.appendChild(script);
+    };
+
+    // Load analytics scripts if environment variables are present
+    if (import.meta.env.VITE_GA_ID) {
+      loadGoogleAnalytics();
+    } else {
+      console.warn('Google Analytics ID not found in environment variables');
+    }
+
+    if (import.meta.env.VITE_CLARITY_ID) {
+      loadClarity();
+    } else {
+      console.warn('Clarity ID not found in environment variables');
+    }
+
     // Function to check if scripts are loaded
     const checkScriptsLoaded = () => {
       return new Promise((resolve) => {
