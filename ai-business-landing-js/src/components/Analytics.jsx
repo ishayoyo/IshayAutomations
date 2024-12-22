@@ -3,6 +3,12 @@ import { useEffect } from 'react'
 //update
 const Analytics = () => {
   useEffect(() => {
+    // Debug environment variables
+    console.log('Environment Variables Check:', {
+      GA_ID: import.meta.env.VITE_GA_ID,
+      CLARITY_ID: import.meta.env.VITE_CLARITY_ID
+    });
+
     // Verify analytics are working
     const verifyAnalytics = () => {
       // Check Clarity
@@ -12,6 +18,7 @@ const Analytics = () => {
         window.clarity("event", "analytics_check");
       } else {
         console.warn('❌ Microsoft Clarity is not initialized');
+        console.log('Clarity ID:', import.meta.env.VITE_CLARITY_ID);
       }
 
       // Check Google Analytics
@@ -24,11 +31,12 @@ const Analytics = () => {
         });
       } else {
         console.warn('❌ Google Analytics is not initialized');
+        console.log('GA ID:', import.meta.env.VITE_GA_ID);
       }
     };
 
-    // Run verification after a short delay to ensure scripts are loaded
-    setTimeout(verifyAnalytics, 2000);
+    // Increase delay to ensure scripts are loaded
+    setTimeout(verifyAnalytics, 5000); // Increased to 5 seconds
 
     // Track page views
     const trackPageView = () => {
