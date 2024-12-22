@@ -8,16 +8,53 @@ const Analytics = () => {
       CLARITY_ID: import.meta.env.VITE_CLARITY_ID
     });
 
+    // Function to check analytics initialization
+    const checkAnalytics = () => {
+      console.log('Checking analytics initialization...');
+      
+      // Check Clarity
+      if (window.clarity) {
+        console.log('✅ Clarity is available');
+        try {
+          window.clarity("identify", "user_check");
+          console.log('✅ Clarity identify call successful');
+        } catch (e) {
+          console.error('❌ Clarity identify call failed:', e);
+        }
+      } else {
+        console.warn('❌ Clarity is not available');
+      }
+
+      // Check Google Analytics
+      if (window.gtag) {
+        console.log('✅ Google Analytics is available');
+        try {
+          window.gtag('event', 'test_event');
+          console.log('✅ GA event call successful');
+        } catch (e) {
+          console.error('❌ GA event call failed:', e);
+        }
+      } else {
+        console.warn('❌ Google Analytics is not available');
+      }
+    };
+
+    // Initial check after a short delay
+    setTimeout(checkAnalytics, 2000);
+
     // Track clicks on important buttons
     const trackButtonClick = (buttonName) => {
+      console.log('Tracking button click:', buttonName);
       try {
         if (window.clarity) {
           window.clarity("event", "button_click", { buttonName });
+          console.log('✅ Clarity button click tracked');
         }
         if (window.gtag) {
           window.gtag('event', 'button_click', {
             button_name: buttonName
           });
+          console.log('✅ GA button click tracked');
         }
       } catch (error) {
         console.error('Error tracking button click:', error);
@@ -26,14 +63,17 @@ const Analytics = () => {
 
     // Track form submissions
     const trackFormSubmission = (formName) => {
+      console.log('Tracking form submission:', formName);
       try {
         if (window.clarity) {
           window.clarity("event", "form_submit", { formName });
+          console.log('✅ Clarity form submission tracked');
         }
         if (window.gtag) {
           window.gtag('event', 'form_submission', {
             form_name: formName
           });
+          console.log('✅ GA form submission tracked');
         }
       } catch (error) {
         console.error('Error tracking form submission:', error);
@@ -42,6 +82,7 @@ const Analytics = () => {
 
     // Add event listeners
     const addEventListeners = () => {
+      console.log('Adding event listeners...');
       // Track CTA button clicks
       document.querySelectorAll('.btn-primary').forEach(button => {
         button.addEventListener('click', () => {
@@ -55,13 +96,16 @@ const Analytics = () => {
           trackFormSubmission(form.id || 'contact_form');
         });
       });
+      console.log('✅ Event listeners added');
     };
 
     // Track route changes
     const handleRouteChange = () => {
+      console.log('Tracking page view');
       try {
         if (window.clarity) {
           window.clarity("pageview");
+          console.log('✅ Clarity pageview tracked');
         }
         if (window.gtag) {
           window.gtag('event', 'page_view', {
@@ -69,17 +113,21 @@ const Analytics = () => {
             page_location: window.location.href,
             page_path: window.location.pathname
           });
+          console.log('✅ GA pageview tracked');
         }
       } catch (error) {
         console.error('Error tracking page view:', error);
       }
     };
 
-    // Add event listeners after a short delay to ensure DOM is ready
-    setTimeout(addEventListeners, 1000);
+    // Add event listeners after a delay to ensure DOM is ready
+    setTimeout(addEventListeners, 2000);
 
     // Listen for route changes
     window.addEventListener('popstate', handleRouteChange);
+
+    // Initial page view
+    setTimeout(handleRouteChange, 2000);
 
     return () => {
       window.removeEventListener('popstate', handleRouteChange);
