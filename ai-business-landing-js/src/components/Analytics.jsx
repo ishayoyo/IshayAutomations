@@ -16,10 +16,10 @@ const Analytics = () => {
       if (window.clarity) {
         console.log('✅ Clarity is available');
         try {
-          window.clarity("identify", "user_check");
-          console.log('✅ Clarity identify call successful');
+          window.clarity("set", "analytics_check", "true");
+          console.log('✅ Clarity set call successful');
         } catch (e) {
-          console.error('❌ Clarity identify call failed:', e);
+          console.error('❌ Clarity set call failed:', e);
         }
       } else {
         console.warn('❌ Clarity is not available');
@@ -47,7 +47,7 @@ const Analytics = () => {
       console.log('Tracking button click:', buttonName);
       try {
         if (window.clarity) {
-          window.clarity("event", "button_click", { buttonName });
+          window.clarity("set", "button_clicked", buttonName);
           console.log('✅ Clarity button click tracked');
         }
         if (window.gtag) {
@@ -66,7 +66,7 @@ const Analytics = () => {
       console.log('Tracking form submission:', formName);
       try {
         if (window.clarity) {
-          window.clarity("event", "form_submit", { formName });
+          window.clarity("set", "form_submitted", formName);
           console.log('✅ Clarity form submission tracked');
         }
         if (window.gtag) {
@@ -103,9 +103,14 @@ const Analytics = () => {
     const handleRouteChange = () => {
       console.log('Tracking page view');
       try {
+        // For Clarity, we'll set the current page info instead of using pageview
         if (window.clarity) {
-          window.clarity("pageview");
-          console.log('✅ Clarity pageview tracked');
+          window.clarity("set", "page_info", {
+            title: document.title,
+            url: window.location.href,
+            path: window.location.pathname
+          });
+          console.log('✅ Clarity page info tracked');
         }
         if (window.gtag) {
           window.gtag('event', 'page_view', {
