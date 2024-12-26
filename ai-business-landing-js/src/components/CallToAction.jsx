@@ -130,7 +130,10 @@ const CallToAction = () => {
           }
         ])
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase error:', error)
+        throw new Error('Failed to submit form. Please try again.')
+      }
 
       // Send Telegram notification with updated format
       const telegramMessage = `
@@ -176,7 +179,9 @@ const CallToAction = () => {
       setCompletedSteps(automationSteps.map((_, index) => index))
     } catch (error) {
       console.error('Error submitting form:', error)
-      alert('There was an error submitting your form. Please try again.')
+      alert(error.message || 'There was an error submitting your form. Please try again.')
+      setCurrentStep(0)
+      setCompletedSteps([])
     } finally {
       setIsSubmitting(false)
     }
