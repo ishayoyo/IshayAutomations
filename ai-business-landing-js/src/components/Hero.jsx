@@ -55,34 +55,40 @@ const ParticleField = () => {
   const { width } = useWindowSize()
   const count = width < 768 ? 400 : 2000
   const sphereSize = width < 768 ? 2.2 : 5
-  const positions = new Float32Array(count * 3)
-  const velocities = new Float32Array(count * 3)
-  const colors = new Float32Array(count * 3)
+  
+  // Move array creation into useMemo to prevent recreation on each render
+  const [arrays] = useState(() => {
+    const positions = new Float32Array(count * 3)
+    const velocities = new Float32Array(count * 3)
+    const colors = new Float32Array(count * 3)
+    
+    // Initialize arrays
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3
+      const radius = sphereSize + Math.random() * (width < 768 ? 0.8 : 1.5)
+      const theta = Math.random() * Math.PI * 2
+      const phi = Math.random() * Math.PI
+
+      positions[i3] = radius * Math.sin(phi) * Math.cos(theta)
+      positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta)
+      positions[i3 + 2] = radius * Math.cos(phi)
+
+      const velocityFactor = width < 768 ? 0.005 : 0.008
+      velocities[i3] = (Math.random() - 0.5) * velocityFactor
+      velocities[i3 + 1] = (Math.random() - 0.5) * velocityFactor
+      velocities[i3 + 2] = (Math.random() - 0.5) * velocityFactor
+
+      const mixFactor = Math.random()
+      colors[i3] = 0.4 + mixFactor * 0.2
+      colors[i3 + 1] = 0.5 + mixFactor * 0.3
+      colors[i3 + 2] = 0.8 + mixFactor * 0.2
+    }
+    
+    return { positions, velocities, colors }
+  })
 
   const frameSkip = useRef(0)
   const maxFrameSkip = width < 768 ? 2 : 0
-
-  for (let i = 0; i < count; i++) {
-    const i3 = i * 3
-    const radius = sphereSize + Math.random() * (width < 768 ? 0.8 : 1.5)
-    const theta = Math.random() * Math.PI * 2
-    const phi = Math.random() * Math.PI
-
-    positions[i3] = radius * Math.sin(phi) * Math.cos(theta)
-    positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta)
-    positions[i3 + 2] = radius * Math.cos(phi)
-
-    const velocityFactor = width < 768 ? 0.005 : 0.008
-    velocities[i3] = (Math.random() - 0.5) * velocityFactor
-    velocities[i3 + 1] = (Math.random() - 0.5) * velocityFactor
-    velocities[i3 + 2] = (Math.random() - 0.5) * velocityFactor
-
-    const mixFactor = Math.random()
-    colors[i3] = 0.4 + mixFactor * 0.2
-    colors[i3 + 1] = 0.5 + mixFactor * 0.3
-    colors[i3 + 2] = 0.8 + mixFactor * 0.2
-  }
-
   const geometry = useRef()
   const material = useRef()
   const points = useRef()
@@ -94,15 +100,15 @@ const ParticleField = () => {
     }
     frameSkip.current = 0
 
-    if (geometry.current) {
+    if (geometry.current?.attributes?.position) {
       const positions = geometry.current.attributes.position.array
       
       for (let i = 0; i < count; i++) {
         const i3 = i * 3
         
-        positions[i3] += velocities[i3]
-        positions[i3 + 1] += velocities[i3 + 1]
-        positions[i3 + 2] += velocities[i3 + 2]
+        positions[i3] += arrays.velocities[i3]
+        positions[i3 + 1] += arrays.velocities[i3 + 1]
+        positions[i3 + 2] += arrays.velocities[i3 + 2]
 
         const x = positions[i3]
         const y = positions[i3 + 1]
@@ -118,9 +124,9 @@ const ParticleField = () => {
           positions[i3 + 1] *= scale
           positions[i3 + 2] *= scale
           
-          velocities[i3] *= -1
-          velocities[i3 + 1] *= -1
-          velocities[i3 + 2] *= -1
+          arrays.velocities[i3] *= -1
+          arrays.velocities[i3 + 1] *= -1
+          arrays.velocities[i3 + 2] *= -1
         }
       }
 
@@ -128,6 +134,7 @@ const ParticleField = () => {
     }
   })
 
+  // Clean up resources
   useEffect(() => {
     return () => {
       if (geometry.current) {
@@ -145,14 +152,17 @@ const ParticleField = () => {
         <bufferAttribute
           attach="attributes-position"
           count={count}
-          array={positions}
+          array={arrays.positions}
           itemSize={3}
+          usage={THREE.DynamicDrawUsage}
+          needsUpdate={true}
         />
         <bufferAttribute
           attach="attributes-color"
           count={count}
-          array={colors}
+          array={arrays.colors}
           itemSize={3}
+          needsUpdate={true}
         />
       </bufferGeometry>
       <pointsMaterial
